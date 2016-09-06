@@ -3,16 +3,17 @@ package Reservas::Gestor;
 #!/usr/bin/perl
 use strict;
 use warnings;
-use feature 'say';
+
 # use v5.20;
-use Data::Dumper;
 use Data::Uniqid qw ( luniqid );
 use File::Slurp;
 use JSON;
 
-# Args / Params
+# # Args / Params
 my $verbose = 0;
-if( 'v' ~~ @ARGV ){ my $verbose = 1; }
+# if( 'v' ~~ @ARGV ){ 
+# 	my $verbose = 1; 
+# }
 
 # Defaults Globales
 my ($sec,$min,$hour,$day,$month,$yr19,@rest) = localtime(time);
@@ -35,7 +36,7 @@ my $json = JSON->new;
 my $registro_json = $json->decode($registro_text);
 my %registros = %$registro_json;
 
-
+#   No vamos vamos a usar esta cadena
 # 	# Normalizar Pedido
 # 	my ( $reporte, $pedido_normalizado )
 # 		= formular_pedido($i, $m, $d, $h, $l, $q, $c);
@@ -62,6 +63,10 @@ print Dumper( %registros ) if $verbose;
 my $registro_actualizado = $json->encode(\%registros);
 write_file( 'registro.json', $registro_actualizado );
 
+sub hola_pedido {
+	my $i = 'Hola, Pedido!';
+	return	$i;
+}
 
 # Subrutinas ### ### ###
 sub formular_pedido {
@@ -169,7 +174,6 @@ sub fecha_correcta {
 
 	my $porque;
 	my $limite_mes = cantidad_dias( $mes );
-
 
 	if( ( $mes >= 1 ) && ( $mes <= 12 ) ) {
 		$mes_correcto = 1;
@@ -281,6 +285,4 @@ sub registrar_pedido {
 	return "RESERVO: $pedido_id";
 }
 
-
-
-true;
+1;
