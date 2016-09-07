@@ -9,14 +9,27 @@
 <!-- Grab jQuery from a CDN, fall back to local if necessary -->
 <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">/* <![CDATA[ */
-    !window.jQuery && document.write('<script type="text/javascript" src="<% request.uri_base %>/javascripts/jquery.js"><\/script>')
+    !window.jQuery && document.write('<script type="text/javascript" src="[% request.uri_base %]/javascripts/jquery.js"><\/script>')
 /* ]]> */</script>
 
 </head>
 <body>
-[% content %]
+<div class=page>
+  <h1>Dancr</h1>
+     <div class=metanav>
+     [% IF not session.logged_in %]
+       <a href="[% login_url %]">log in</a>
+     [% ELSE %]
+       <a href="[% logout_url %]">log out</a>
+     [% END %]
+  </div>
+  [% IF msg %]
+    <div class=flash> [% msg %] </div>
+  [% END %]
+  [% content %]
+</div>
 <div id="footer">
-Powered by <a href="http://perldancer.org/">Dancer2</a> <% dancer_version %>
+Powered by <a href="http://perldancer.org/">Dancer2</a> [% dancer_version %]
 </div>
 </body>
 </html>
