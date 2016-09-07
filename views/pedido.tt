@@ -1,0 +1,13 @@
+<h2>Login</h2>
+[% IF resultado %]
+  <p class=error><strong>Error:</strong>
+[% resultado %][% END %]
+<form action="[% login_url %]" method=post>
+  <dl>
+    <dt>Atributo 1:
+    <dd><input type=text name=atributo1>
+    <dt>Atributo 2:
+    <dd><input type=password name=atributo2>
+    <dd><input type=submit value=Login>
+  </dl>
+</form>

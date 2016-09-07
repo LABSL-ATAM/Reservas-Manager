@@ -34,7 +34,9 @@ my $i = Reservas::Gestor::hola_pedido();
 
 get '/' => sub {
 	say $i;
+	print Dumper(params);
 	return $i;
+
 };
 
 any ['get', 'post'] => '/login' => sub {
@@ -58,13 +60,32 @@ any ['get', 'post'] => '/login' => sub {
 	};
 };
 
+any ['get', 'post'] => '/pedido' => sub {
+	my $resultado;
+	if ( request->method() eq "POST" ) {
+		# process form input
+		my $param1 = params->{'atributo1'};
+		my $param2 = params->{'atributo2'};
 
+		print Dumper($param2);
+		set_flash($param1);
+		$resultado = $param1;
+	};
+	template 'pedido.tt', {
+		'resultado' => $resultado,
+	}
+};
+
+get '/logout' => sub {
+   app->destroy_session;
+   set_flash('You are logged out.');
+   redirect '/';
+};
 
 
 # Subfunciones
 sub set_flash {
 	my $message = shift;
-
 	$flash = $message;
 }
 
