@@ -7,7 +7,9 @@
 
 [% END %]
 [% IF ingresado %]
-  <strong><a href=/grabar> GRABAR<a></strong>
+  <br>
+  <strong>
+    <a href=/grabar>GRABAR<a></strong>
 [% END %]
 </p>
 
