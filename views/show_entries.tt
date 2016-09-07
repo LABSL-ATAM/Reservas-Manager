@@ -1,6 +1,6 @@
 
 [% IF session.logged_in %]
-  <form action="[% add_entry_url %]" method=post class=add-entry>
+  <form action="[% add_pedido_url %]" method=post class=add-entry>
 	<dl>
 	  <dt>Title:
 	  <dd><input type=text size=30 name=title>

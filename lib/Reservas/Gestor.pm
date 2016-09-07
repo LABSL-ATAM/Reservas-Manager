@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 # use v5.20;
+use Data::Dumper;
 use Data::Uniqid qw ( luniqid );
 use File::Slurp;
 use JSON;
@@ -69,17 +70,6 @@ write_file( 'registro.json', $registro_actualizado );
 
 sub bar {
 	my $o = 'Hola, Pedido!';
-
-	# my (
-	# 	$item,
-	# 	$mes,
-	# 	$dia,
-	# 	$hora,
-	# 	$duracion,
-	# 	$quien,
-	# 	$comentario
-	# ) = @_;
-
 	return  $o;
 }
 
@@ -93,16 +83,16 @@ sub cargar_registros(){
 }
 
 sub formular_pedido {
+	my %pedido = @_;
 
-	my (
-		$item,
-		$mes,
-		$dia,
-		$hora,
-		$duracion,
-		$quien,
-		$comentario
-	) = @_;
+	my $item = $pedido{item};
+	my $mes = $pedido{mes};
+	my $dia = $pedido{dia};
+	my $hora = $pedido{hora};
+	my $duracion = $pedido{duracion};
+	my $quien = $pedido{quien};
+	my $comentario = $pedido{comentario};
+
 
 	# Condiciones del pedido
 	my $item_existe;
@@ -185,6 +175,7 @@ ESTRUCTURA DE PEDIDO
 			"RECHAZADO ".
 			"($porque)";
 	}
+
 }
 
 
