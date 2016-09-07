@@ -23,7 +23,7 @@ our $VERSION = '0.1';
 # https://metacpan.org/pod/Dancer2::Tutorial
 
 my $flash;
-my %registros = Reservas::Gestor::cargar_registros();
+my %registros = Reservas::Gestor::cargar();
 
 # Hooks
 
@@ -35,7 +35,6 @@ hook before_template_render => sub {
 	$tokens->{'logout_url'} = uri_for('/logout');
 	$tokens->{'pedido'} = uri_for('/pedido');
 };
-
 
 
 # Ruteos
@@ -72,21 +71,43 @@ any ['get', 'post'] => '/login' => sub {
 
 any ['get', 'post'] => '/pedido' => sub {
 	my $resultado;
+	my $grabar = 0;
+
 	if ( request->method() eq "POST" ) {
-		# process form input
  		my %pedido_IN = params;
+		my ( $reporte, $normalizado ) 
+			= Reservas::Gestor::evaluar(%pedido_IN);
 
-		my($reporte, $pedido_normalizado) 
-			= Reservas::Gestor::formular_pedido(%pedido_IN);
+		if ( $normalizado ) {
+			my ($msj,$disponible)
+				= Reservas::Gestor::consultar($normalizado);
+			$reporte .=  " -> ".$msj;
 
-		# print Dumper(%pedido_IN);
+			# Ingresar Pedido
+			if ( $disponible ){
+				$reporte .= " -> ".Reservas::Gestor::reservar($disponible);
+				$grabar = 1;
+			}
+		}
+
 		# set_flash('fdef');
-
-		$resultado = $reporte; # 
+		$resultado = $reporte;
 	};
 	template 'pedido.tt', {
 		'resultado' => $resultado,
+		'ingresado' => $grabar,
 	}
+};
+
+get '/grabar' => sub {
+	Reservas::Gestor::grabar();
+	%registros = Reservas::Gestor::cargar();
+	template 'show_entries.tt', {
+        'msg' => get_flash(),
+        'add_pedido_url' => uri_for('/pedido'),
+        'registros' => \%registros,
+    };
+
 };
 
 post '/add' => sub {
@@ -123,11 +144,10 @@ sub get_flash {
 	return $msg;
 }
 
-# notas
+true;
 
+
+
+# NOTAS
 # llamar subs de un modulo
 # my $foo = Reservas::Gestor::bar();
-
-
-
-true;

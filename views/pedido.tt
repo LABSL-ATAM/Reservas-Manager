@@ -4,16 +4,20 @@
   <p class=error>
   	<strong>Resultado:</strong> 
   	[% resultado %]
-  </p>
+
 [% END %]
+[% IF ingresado %]
+  <strong><a href=/grabar> GRABAR<a></strong>
+[% END %]
+</p>
 
 <form action="[% pedido_url %]" method=post>
-    item: <input type=text name=item><br>
-    Mes: <input type=password name=mes><br>
-    Dia: <input type=text name=dia><br>
-   	Hora: <input type=password name=hora><br>
-   	Duracion: <input type=text name=duracion><br>
-    Quien: <input type=text name=quien><br>
-    Comentario: <input type=password name=comentario><br>
-    <input type=submit value=Login>
+    item: <input type=text name=item value=microfonoSM58><br>
+    Mes: <input type=text name=mes value=1><br>
+    Dia: <input type=text name=dia value=1><br>
+   	Hora: <input type=text name=hora value=1><br>
+   	Duracion: <input type=text name=duracion value=12><br>
+    Quien: <input type=text name=quien value=pepe><br>
+    Comentario: <input type=text name=comentario value=blabla><br>
+    <input type=submit value=Counsultar>
 </form>

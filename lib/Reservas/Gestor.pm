@@ -9,6 +9,8 @@ use Data::Dumper;
 use Data::Uniqid qw ( luniqid );
 use File::Slurp;
 use JSON;
+my $json = JSON->new;
+
 
 # # Args / Params
 my $verbose = 0;
@@ -19,9 +21,6 @@ my $verbose = 0;
 # Defaults Globales
 my ($sec,$min,$hour,$day,$month,$yr19,@rest) = localtime(time);
 my $anio = $yr19+1900; # año actual ¿salvo q se indique?
-
-
-
 my $limite_duracion = 24;
 
 # # Inventario (items disponibles)
@@ -31,14 +30,12 @@ my %inventario = map { $_ => 1 } @inventario; # CABEZEADA POR REVISAR
 # Pedidos (input)
 # my @pedidos = read_file('pedidos.csv');
 
+my %registros = cargar();
 
-# Registro (almacen de reservas)
-my $registro_text = read_file('registro.json');
-my $json = JSON->new;
-my $registro_json = $json->decode($registro_text);
-my %registros = %$registro_json;
 
-#   No vamos vamos a usar esta cadena
+
+
+#   NO VAMOS A USAR ESTA CADENA ACA
 
 #   # Normalizar Pedido
 #   my ( $reporte, $pedido_normalizado )
@@ -50,12 +47,12 @@ my %registros = %$registro_json;
 #     my (
 #       $msj,
 #       $pedido_disponible
-#     ) = disponibilidad($pedido_normalizado);
+#     ) = consultar($pedido_normalizado);
 #     $reporte .=  " -> ".$msj;
 
 #     # Ingresar Pedido
 #     if($pedido_disponible){
-#       $reporte .= " -> ".registrar_pedido($pedido_disponible);
+#       $reporte .= " -> ".reservar($pedido_disponible);
 #     }
 #   }
 #   say $reporte;
@@ -64,34 +61,39 @@ my %registros = %$registro_json;
 
 print Dumper( %registros ) if $verbose;
 
-# Grabar Registros ### ### ###
-my $registro_actualizado = $json->encode(\%registros);
-write_file( 'registro.json', $registro_actualizado );
+grabar();
+
+sub grabar{
+	# Grabar Registros ### ### ###
+	my $registro_actualizado = $json->encode(\%registros);
+	write_file( 'registro.json', $registro_actualizado );
+}
+
+
+# Subrutinas ### ### ###
 
 sub bar {
 	my $o = 'Hola, Pedido!';
 	return  $o;
 }
 
-# Subrutinas ### ### ###
-
-sub cargar_registros(){
+sub cargar{
 	my $registros_RAW = read_file('registro.json');
-	my $json = JSON->new;
+	# my $json = JSON->new;
 	my $registro_JSON = $json->decode($registros_RAW);
 	return %$registro_JSON;
 }
 
-sub formular_pedido {
+sub evaluar{
 	my %pedido = @_;
 
-	my $item = $pedido{item};
-	my $mes = $pedido{mes};
-	my $dia = $pedido{dia};
-	my $hora = $pedido{hora};
-	my $duracion = $pedido{duracion};
-	my $quien = $pedido{quien};
-	my $comentario = $pedido{comentario};
+	my $item 		= $pedido{item};
+	my $mes 		= $pedido{mes};
+	my $dia 		= $pedido{dia};
+	my $hora 		= $pedido{hora};
+	my $duracion 	= $pedido{duracion};
+	my $quien 		= $pedido{quien};
+	my $comentario 	= $pedido{comentario};
 
 
 	# Condiciones del pedido
@@ -143,15 +145,6 @@ sub formular_pedido {
 					quien   => $quien,
 					comentario  => $comentario
 				};
-
-=pod
-ESTRUCTURA DE PEDIDO
-	Item ( como en inventario )
-	Cuando ( $pedido_retira."-".$pedido_vuelve )
-	Quien Hizo el pedido
-	Comentario
-=cut
-
 			}
 		}
 	}
@@ -177,8 +170,6 @@ ESTRUCTURA DE PEDIDO
 	}
 
 }
-
-
 sub fecha_correcta {
 	my ( $mes, $dia, $hora ) =  @_;
 
@@ -213,7 +204,6 @@ sub fecha_correcta {
 		return 0, $porque;
 	}
 }
-
 sub cantidad_dias{
 	my $m = $_[0];
 
@@ -232,7 +222,6 @@ sub cantidad_dias{
 
 	return $mes2dias{ lc substr($m, 0, 3) };
 }
-
 sub es_bisiesto{
 	my $y = shift;
 	my $bisiesto = 0;
@@ -248,8 +237,8 @@ sub es_bisiesto{
 	return $bisiesto;
 }
 
-sub disponibilidad{
 
+sub consultar{
 	my $p = $_[0];
 	my $item = $p->{item};
 	my $ocupado = 0;
@@ -284,19 +273,18 @@ sub disponibilidad{
 	}
 }
 
-sub registrar_pedido {
+sub reservar{
 	my $p  = $_[0];
-
 	my $item  = $p->{item};
-	my $pedido_id = luniqid; # ID de pedido
+	my $reserva_id = luniqid; # ID de pedido
 
 	my $pedido_embalado = {
 		cuando    => $p->{cuando},
 		quien   => $p->{quien},
 		comentario  => $p->{comentario}
 	};
-	$registros{$item}{$pedido_id} = $pedido_embalado;
-	return "RESERVO: $pedido_id";
+	$registros{$item}{$reserva_id} = $pedido_embalado;
+	return "RESERVO: $reserva_id";
 }
 
 1;
