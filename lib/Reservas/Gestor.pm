@@ -11,8 +11,8 @@ use JSON;
 
 # # Args / Params
 my $verbose = 0;
-# if( 'v' ~~ @ARGV ){ 
-# 	my $verbose = 1; 
+# if( 'v' ~~ @ARGV ){
+#   my $verbose = 1;
 # }
 
 # Defaults Globales
@@ -37,25 +37,25 @@ my $registro_json = $json->decode($registro_text);
 my %registros = %$registro_json;
 
 #   No vamos vamos a usar esta cadena
-# 	# Normalizar Pedido
-# 	my ( $reporte, $pedido_normalizado )
-# 		= formular_pedido($i, $m, $d, $h, $l, $q, $c);
-# 	# item, mes, dia, hora, duracion, quien, comentario
+#   # Normalizar Pedido
+#   my ( $reporte, $pedido_normalizado )
+#     = formular_pedido($i, $m, $d, $h, $l, $q, $c);
+#   # item, mes, dia, hora, duracion, quien, comentario
 
-# 	# Procesar Pedido
-# 	if($pedido_normalizado){
-# 		my (
-# 			$msj,
-# 			$pedido_disponible
-# 		) = disponibilidad($pedido_normalizado);
-# 		$reporte .=  " -> ".$msj;
+#   # Procesar Pedido
+#   if($pedido_normalizado){
+#     my (
+#       $msj,
+#       $pedido_disponible
+#     ) = disponibilidad($pedido_normalizado);
+#     $reporte .=  " -> ".$msj;
 
-# 		# Ingresar Pedido
-# 		if($pedido_disponible){
-# 			$reporte .= " -> ".registrar_pedido($pedido_disponible);
-# 		}
-# 	}
-# 	say $reporte;
+#     # Ingresar Pedido
+#     if($pedido_disponible){
+#       $reporte .= " -> ".registrar_pedido($pedido_disponible);
+#     }
+#   }
+#   say $reporte;
 
 print Dumper( %registros ) if $verbose;
 
@@ -65,7 +65,20 @@ write_file( 'registro.json', $registro_actualizado );
 
 sub hola_pedido {
 	my $i = 'Hola, Pedido!';
-	return	$i;
+
+	my (
+		$item,
+		$mes,
+		$dia,
+		$hora,
+		$duracion,
+		$quien,
+		$comentario
+	) = @_;
+
+
+
+	return  $i;
 }
 
 # Subrutinas ### ### ###
@@ -125,10 +138,10 @@ sub formular_pedido {
 					$hora+$duracion,$dia,$mes-1,$anio-1900);
 
 				$pedido_OK = {
-					item		=> $item,
-					cuando		=> $pedido_retira."-".$pedido_vuelve,
-					quien		=> $quien,
-					comentario	=> $comentario
+					item    => $item,
+					cuando    => $pedido_retira."-".$pedido_vuelve,
+					quien   => $quien,
+					comentario  => $comentario
 				};
 
 =pod
@@ -277,9 +290,9 @@ sub registrar_pedido {
 	my $pedido_id = luniqid; # ID de pedido
 
 	my $pedido_embalado = {
-		cuando		=> $p->{cuando},
-		quien		=> $p->{quien},
-		comentario	=> $p->{comentario}
+		cuando    => $p->{cuando},
+		quien   => $p->{quien},
+		comentario  => $p->{comentario}
 	};
 	$registros{$item}{$pedido_id} = $pedido_embalado;
 	return "RESERVO: $pedido_id";
