@@ -1,28 +1,40 @@
+
 [% IF session.logged_in %]
   <form action="[% add_entry_url %]" method=post class=add-entry>
-    <dl>
-      <dt>Title:
-      <dd><input type=text size=30 name=title>
-      <dt>Text:
-      <dd><textarea name=text rows=5 cols=40></textarea>
-      <dd><input type=submit value=Share>
-    </dl>
+	<dl>
+	  <dt>Title:
+	  <dd><input type=text size=30 name=title>
+	  <dt>Text:
+	  <dd><textarea name=text rows=5 cols=40></textarea>
+	  <dd><input type=submit value=Share>
+	</dl>
   </form>
 [% END %]
-<ul class=registros>
-[% IF registros.size %]
-  [% FOREACH item IN registros.keys.nsort %]
-    <ul><h1>[% item %]</h1>
 
-    [% FOREACH reserva IN registros.$item.keys %]
-      <li><h2>[% registros.$item.$reserva.quien %]</h2>
-      [% registros.$item.$reserva.cuando %]</li>
-    [% END %]
-    </ul>
-  [% END %]
+[% IF registros.size %]
+	<ul class=registros>
+		[% FOREACH item IN registros.keys %]
+			<li class="item">
+				<strong>[% item %]</strong>
+				
+				<ul class="reservas">
+				[% FOREACH reserva IN registros.$item.keys %]
+				 	<li id="[% reserva %]"
+				 		class="reserva" 
+				 	>
+					 	<strong>
+							[% registros.$item.$reserva.quien %]
+						</strong>
+						[% registros.$item.$reserva.cuando %]
+						<em></em>
+					</li>
+				[% END %]
+				</ul>
+		  	
+		  	</li>
+		[% END %]
+  	</ul>
 
 [% ELSE %]
-  <li>
   <em>Unbelievable.  No entries here so far</em>
 [% END %]
-</ul>

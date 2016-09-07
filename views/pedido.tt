@@ -1,14 +1,17 @@
 <h2>Login</h2>
 
 [% IF resultado %]
-  <p class=error><strong>Error:</strong>
-[% resultado %][% END %]
+  <p class=error>
+  	<strong>Resultado:</strong> 
+  	[% resultado %]
+  </p>
+[% END %]
 
 <form action="[% pedido_url %]" method=post>
     item: <input type=text name=item><br>
-    Mes: <input type=password name=><br>
+    Mes: <input type=password name=mes><br>
     Dia: <input type=text name=dia><br>
-   	Hora: <input type=password name=><br>
+   	Hora: <input type=password name=hora><br>
    	Duracion: <input type=text name=duracion><br>
     Quien: <input type=text name=quien><br>
     Comentario: <input type=password name=comentario><br>

@@ -27,13 +27,10 @@ our $VERSION = '0.1';
 my $flash;
 
 
-# llamar subs de un modulo
-# my $foo = Reservas::Gestor::bar();
-
 my %registros = Reservas::Gestor::cargar_registros();
-print Dumper(%registros);
 
 # Hooks
+
 hook before_template_render => sub {
 	my $tokens = shift;
 
@@ -55,7 +52,6 @@ get '/' => sub {
     };
     #	template 'index';
 };
-
 
 any ['get', 'post'] => '/login' => sub {
 	my $err;
@@ -96,16 +92,15 @@ any ['get', 'post'] => '/pedido' => sub {
 	my $resultado;
 	if ( request->method() eq "POST" ) {
 		# process form input
- 		my $pedido_IN = params;
+ 		my %pedido_IN = params;
 		# pedido_IN == item, mes, dia, hora, duracion, quien, comentario
 
-		# my ( $i, $m, $d, $h, $l, $q, $c ) =  $pedido_IN;
 		# my ( $reporte, $pedido_normalizado )
 		#		= formular_pedido($i, $m, $d, $h, $l, $q, $c);
-		# print Dumper($pedido->{'atributo1'});
+		print Dumper(%pedido_IN);
 
 		set_flash('fdef');
-		$resultado = $pedido_IN->{'atributo7'};
+		$resultado = $pedido_IN{item}; # 
 	};
 	template 'pedido.tt', {
 		'resultado' => $resultado,
@@ -120,6 +115,7 @@ get '/logout' => sub {
 
 
 # Subfunciones
+
 sub set_flash {
 	my $message = shift;
 	$flash = $message;
@@ -130,5 +126,12 @@ sub get_flash {
 	$flash = "";
 	return $msg;
 }
+
+# notas
+
+# llamar subs de un modulo
+# my $foo = Reservas::Gestor::bar();
+
+
 
 true;
