@@ -23,12 +23,13 @@ my $anio = $yr19+1900; # año actual ¿salvo q se indique?
 
 my $limite_duracion = 24;
 
-# Inventario (items disponibles)
+# # Inventario (items disponibles)
 my @inventario =  split /\W/, read_file('inventario');
 my %inventario = map { $_ => 1 } @inventario; # CABEZEADA POR REVISAR
 
 # Pedidos (input)
 # my @pedidos = read_file('pedidos.csv');
+
 
 # Registro (almacen de reservas)
 my $registro_text = read_file('registro.json');
@@ -37,6 +38,7 @@ my $registro_json = $json->decode($registro_text);
 my %registros = %$registro_json;
 
 #   No vamos vamos a usar esta cadena
+
 #   # Normalizar Pedido
 #   my ( $reporte, $pedido_normalizado )
 #     = formular_pedido($i, $m, $d, $h, $l, $q, $c);
@@ -57,31 +59,39 @@ my %registros = %$registro_json;
 #   }
 #   say $reporte;
 
+
+
 print Dumper( %registros ) if $verbose;
 
 # Grabar Registros ### ### ###
 my $registro_actualizado = $json->encode(\%registros);
 write_file( 'registro.json', $registro_actualizado );
 
-sub hola_pedido {
-	my $i = 'Hola, Pedido!';
+sub bar {
+	my $o = 'Hola, Pedido!';
 
-	my (
-		$item,
-		$mes,
-		$dia,
-		$hora,
-		$duracion,
-		$quien,
-		$comentario
-	) = @_;
+	# my (
+	# 	$item,
+	# 	$mes,
+	# 	$dia,
+	# 	$hora,
+	# 	$duracion,
+	# 	$quien,
+	# 	$comentario
+	# ) = @_;
 
-
-
-	return  $i;
+	return  $o;
 }
 
 # Subrutinas ### ### ###
+
+sub cargar_registros(){
+	my $registros_RAW = read_file('registro.json');
+	my $json = JSON->new;
+	my $registro_JSON = $json->decode($registros_RAW);
+	return %$registro_JSON;
+}
+
 sub formular_pedido {
 
 	my (

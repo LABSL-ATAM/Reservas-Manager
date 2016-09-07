@@ -1,14 +1,16 @@
 <h2>Login</h2>
+
 [% IF resultado %]
   <p class=error><strong>Error:</strong>
 [% resultado %][% END %]
+
 <form action="[% pedido_url %]" method=post>
-    Atributo 1: <input type=text name=atributo1><br>
-    Atributo 2: <input type=password name=atributo2><br>
-    Atributo 3: <input type=text name=atributo3><br>
-    Atributo 4: <input type=password name=atributo4><br>
-    Atributo 5: <input type=text name=atributo5><br>
-    Atributo 6: <input type=text name=atributo6><br>
-    Atributo 7: <input type=password name=atributo7><br>
+    item: <input type=text name=item><br>
+    Mes: <input type=password name=><br>
+    Dia: <input type=text name=dia><br>
+   	Hora: <input type=password name=><br>
+   	Duracion: <input type=text name=duracion><br>
+    Quien: <input type=text name=quien><br>
+    Comentario: <input type=password name=comentario><br>
     <input type=submit value=Login>
 </form>

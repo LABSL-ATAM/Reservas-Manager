@@ -9,12 +9,20 @@
     </dl>
   </form>
 [% END %]
-<ul class=entries>
-[% IF entries.size %]
-  [% FOREACH id IN entries.keys.nsort %]
-    <li><h2>[% entries.$id.title %]</h2>[% entries.$id.text %]
+<ul class=registros>
+[% IF registros.size %]
+  [% FOREACH item IN registros.keys.nsort %]
+    <ul><h1>[% item %]</h1>
+
+    [% FOREACH reserva IN registros.$item.keys %]
+      <li><h2>[% registros.$item.$reserva.quien %]</h2>
+      [% registros.$item.$reserva.cuando %]</li>
+    [% END %]
+    </ul>
   [% END %]
+
 [% ELSE %]
-  <li><em>Unbelievable.  No entries here so far</em>
+  <li>
+  <em>Unbelievable.  No entries here so far</em>
 [% END %]
 </ul>

@@ -6,48 +6,56 @@ use Data::Dumper;
 use Template;
 
 use Dancer2;
+
 # set 'database'     => File::Spec->catfile(File::Spec->tmpdir(), 'dancr.db');
 set 'session'      => 'Simple';
 set 'template'     => 'template_toolkit';
+set 'layout'       => 'main';
 set 'logger'       => 'console';
 set 'log'          => 'debug';
 set 'show_errors'  => 1;
 set 'startup_info' => 1;
 set 'warnings'     => 1;
 
-set 'username' => 'admin';
-set 'password' => 'password';
-set 'layout'       => 'main';
+set 'username'     => 'admin';
+set 'password'     => 'password';
+our $VERSION = '0.1';
+
+
 # https://metacpan.org/pod/Dancer2::Tutorial
 
 my $flash;
 
-our $VERSION = '0.1';
 
-# Como llamar subs de un modulo
-my $i = Reservas::Gestor::hola_pedido();
+# llamar subs de un modulo
+# my $foo = Reservas::Gestor::bar();
 
+my %registros = Reservas::Gestor::cargar_registros();
+print Dumper(%registros);
+
+# Hooks
 hook before_template_render => sub {
 	my $tokens = shift;
 
 	# $tokens->{'css_url'} = request->base . 'css/style.css';
 	$tokens->{'login_url'} = uri_for('/login');
 	$tokens->{'logout_url'} = uri_for('/logout');
-
 	$tokens->{'pedido'} = uri_for('/pedido');
 };
 
+
+
 # Ruteos
+
 get '/' => sub {
-	say $i;
-#	template 'index';
 	template 'show_entries.tt', {
         'msg' => get_flash(),
         # 'add_entry_url' => uri_for('/add'),
-        # 'entries' => $sth->fetchall_hashref('id'),
+        'registros' => \%registros,
     };
-	# return $i; #el return ojaldre caga todo.
+    #	template 'index';
 };
+
 
 any ['get', 'post'] => '/login' => sub {
 	my $err;
@@ -55,7 +63,7 @@ any ['get', 'post'] => '/login' => sub {
 	# process form input
 		if ( params->{'username'} ne setting('username') ) {
 			$err = "Invalid username";
-		} elsif ( params->{'password'} ne setting('password') ) {
+		} elsif ( params->{'password'} ne setting('password') ) {              
 			$err = "Invalid password";
 	}else{
 			session 'logged_in' => true;
@@ -71,7 +79,7 @@ any ['get', 'post'] => '/login' => sub {
 
 post '/add' => sub {
    # if ( not session('logged_in') ) {
-   #    send_error("Not logged in", 401);
+   #    send_error("Not logged in", 401);P
    # }
 
    # my $db = connect_db();
@@ -89,13 +97,13 @@ any ['get', 'post'] => '/pedido' => sub {
 	if ( request->method() eq "POST" ) {
 		# process form input
  		my $pedido_IN = params;
-# #		# pedido_IN == item, mes, dia, hora, duracion, quien, comentario
+		# pedido_IN == item, mes, dia, hora, duracion, quien, comentario
 
-# 		my ( $i, $m, $d, $h, $l, $q, $c ) =  $pedido_IN;
-# 		my ( $reporte, $pedido_normalizado )
-# 			= formular_pedido($i, $m, $d, $h, $l, $q, $c);
-
+		# my ( $i, $m, $d, $h, $l, $q, $c ) =  $pedido_IN;
+		# my ( $reporte, $pedido_normalizado )
+		#		= formular_pedido($i, $m, $d, $h, $l, $q, $c);
 		# print Dumper($pedido->{'atributo1'});
+
 		set_flash('fdef');
 		$resultado = $pedido_IN->{'atributo7'};
 	};
