@@ -1,32 +1,56 @@
 
+[% USE date %]
+[% USE dumper(indent=0, pad="<br>") %]
+
+# use current time and default format
+[% date.format %]
+
+
+
 [% IF session.logged_in %]
-  <form action="[% add_pedido_url %]" method=post class=add-entry>
+<!--  
+	<form action="[% add_pedido_url %]" method=post class=add-entry>
 	<dl>
-	  <dt>Title:
-	  <dd><input type=text size=30 name=title>
-	  <dt>Text:
-	  <dd><textarea name=text rows=5 cols=40></textarea>
-	  <dd><input type=submit value=Share>
+		<dt>Title:
+		<dd><input type=text size=30 name=title>
+		<dt>Text:
+		<dd><textarea name=text rows=5 cols=40></textarea>
+		<dd><input type=submit value=Share>
 	</dl>
-  </form>
+	</form> 
+-->
 [% END %]
 
 [% IF registros.size %]
+
 	<ul class=registros>
 		[% FOREACH item IN registros.keys %]
 			<li class="item">
 				<strong>[% item %]</strong>
 				
 				<ul class="reservas">
-				[% FOREACH reserva IN registros.$item.keys %]
+				[% 	FOREACH reserva 
+					IN registros.$item.keys
+				%]
 				 	<li id="[% reserva %]"
 				 		class="reserva" 
 				 	>
 					 	<strong>
-							[% registros.$item.$reserva.quien %]
+							[% 	registros.$item.$reserva.quien 
+								FILTER ucfirst 
+							%]
 						</strong>
-						[% registros.$item.$reserva.cuando %]
-						<em></em>
+						<ul class="cuando">
+						[% 	FOREACH cuando 
+							IN 	registros.$item.$reserva.cuando.
+							split('-')
+						%]
+							<li>
+								[% date.format(cuando) %]
+							</li>
+						[% END %]
+						</ul>	
+
 					</li>
 				[% END %]
 				</ul>
@@ -36,5 +60,7 @@
   	</ul>
 
 [% ELSE %]
+
   <em>Unbelievable.  No entries here so far</em>
+
 [% END %]

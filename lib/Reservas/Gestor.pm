@@ -23,61 +23,26 @@ my ($sec,$min,$hour,$day,$month,$yr19,@rest) = localtime(time);
 my $anio = $yr19+1900; # año actual ¿salvo q se indique?
 my $limite_duracion = 24;
 
-# # Inventario (items disponibles)
-my @inventario =  split /\W/, read_file('inventario');
-my %inventario = map { $_ => 1 } @inventario; # CABEZEADA POR REVISAR
-
-# Pedidos (input)
-# my @pedidos = read_file('pedidos.csv');
-
-my %registros = cargar();
-
-
-
-
-#   NO VAMOS A USAR ESTA CADENA ACA
-
-#   # Normalizar Pedido
-#   my ( $reporte, $pedido_normalizado )
-#     = formular_pedido($i, $m, $d, $h, $l, $q, $c);
-#   # item, mes, dia, hora, duracion, quien, comentario
-
-#   # Procesar Pedido
-#   if($pedido_normalizado){
-#     my (
-#       $msj,
-#       $pedido_disponible
-#     ) = consultar($pedido_normalizado);
-#     $reporte .=  " -> ".$msj;
-
-#     # Ingresar Pedido
-#     if($pedido_disponible){
-#       $reporte .= " -> ".reservar($pedido_disponible);
-#     }
-#   }
-#   say $reporte;
-
-
+# Datos 
+my %inventario = inventario();
+my %registros = registros();
 
 print Dumper( %registros ) if $verbose;
 
+
+
 grabar();
-
-sub grabar{
-	# Grabar Registros ### ### ###
-	my $registro_actualizado = $json->encode(\%registros);
-	write_file( 'registro.json', $registro_actualizado );
-}
-
 
 # Subrutinas ### ### ###
 
-sub bar {
-	my $o = 'Hola, Pedido!';
-	return  $o;
+sub inventario{
+	# # Inventario (items disponibles)
+	my @inventario =  split /\W/, read_file('inventario');
+	my %inventario = map { $_ => 1 } @inventario; # CABEZEADA POR REVISAR
+	return %inventario;
 }
 
-sub cargar{
+sub registros{
 	my $registros_RAW = read_file('registro.json');
 	# my $json = JSON->new;
 	my $registro_JSON = $json->decode($registros_RAW);
@@ -170,6 +135,7 @@ sub evaluar{
 	}
 
 }
+
 sub fecha_correcta {
 	my ( $mes, $dia, $hora ) =  @_;
 
@@ -204,6 +170,7 @@ sub fecha_correcta {
 		return 0, $porque;
 	}
 }
+
 sub cantidad_dias{
 	my $m = $_[0];
 
@@ -222,6 +189,7 @@ sub cantidad_dias{
 
 	return $mes2dias{ lc substr($m, 0, 3) };
 }
+
 sub es_bisiesto{
 	my $y = shift;
 	my $bisiesto = 0;
@@ -236,7 +204,6 @@ sub es_bisiesto{
 	}
 	return $bisiesto;
 }
-
 
 sub consultar{
 	my $p = $_[0];
@@ -273,7 +240,7 @@ sub consultar{
 	}
 }
 
-sub reservar{
+sub registrar{
 	my $p  = $_[0];
 	my $item  = $p->{item};
 	my $reserva_id = luniqid; # ID de pedido
@@ -285,6 +252,12 @@ sub reservar{
 	};
 	$registros{$item}{$reserva_id} = $pedido_embalado;
 	return "RESERVO: $reserva_id";
+}
+
+sub grabar{
+	# Grabar Registros ### ### ###
+	my $registro_actualizado = $json->encode(\%registros);
+	write_file( 'registro.json', $registro_actualizado );
 }
 
 1;

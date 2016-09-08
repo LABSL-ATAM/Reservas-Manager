@@ -6,20 +6,68 @@
   	[% resultado %]
 
 [% END %]
-[% IF ingresado %]
+
+[% IF puede_reservar %]
   <br>
   <strong>
-    <a href=/grabar>GRABAR<a></strong>
+    <a href="/reservar" >Registrar</a>
+  </strong>
 [% END %]
 </p>
 
 <form action="[% pedido_url %]" method=post>
-    item: <input type=text name=item value=microfonoSM58><br>
-    Mes: <input type=text name=mes value=1><br>
-    Dia: <input type=text name=dia value=1><br>
-   	Hora: <input type=text name=hora value=1><br>
-   	Duracion: <input type=text name=duracion value=12><br>
-    Quien: <input type=text name=quien value=pepe><br>
-    Comentario: <input type=text name=comentario value=blabla><br>
-    <input type=submit value=Counsultar>
+
+    Item: 
+    <select name=item><br>
+      [% FOREACH item IN inventario.keys %]
+        <option value="[% item %]">
+          [% item %]
+        </option>
+      [% END %]
+    </select><br>
+
+    Mes:
+    <select name=mes>
+      [% FOREACH mes IN [1..12] %]
+        <option value="[% mes %]">
+          [% mes %]
+        </option>
+      [% END %]
+    </select>
+    <br>
+
+    Dia:
+    <select name=dia>
+      [% FOREACH dia IN [1..31] %]
+        <option value="[% dia %]">
+          [% dia %]
+        </option>
+      [% END %]
+    </select>
+    <br>
+   	Hora:
+    <select name=hora>
+      [% FOREACH hora IN [1..24] %]
+        <option value="[% hora %]">
+          [% hora %]
+        </option>
+      [% END %]
+    </select>
+    <br>
+   	Duracion:
+    <select name=duracion>
+        <option value="6">6</option>
+        <option value="12">12</option>
+        <option value="24">24</option>
+    </select>
+    <br>
+    Quien: 
+    <input type=text name=quien value=pepe>
+    <br>
+
+    Comentario: <br>
+<textarea rows="3" cols="50" name=comentario></textarea>
+    
+    <br>
+    <input type=submit value=Consultar>
 </form>

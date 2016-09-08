@@ -24,7 +24,8 @@ our $VERSION = '0.1';
 # https://metacpan.org/pod/Dancer2::Tutorial
 
 my $flash;
-my %registros = Reservas::Gestor::cargar();
+my %registros  = Reservas::Gestor::registros();
+my %inventario = Reservas::Gestor::inventario();
 
 # Hooks
 
@@ -34,19 +35,14 @@ hook before_template_render => sub {
 	# $tokens->{'css_url'} = request->base . 'css/style.css';
 	$tokens->{'login_url'} = uri_for('/login');
 	$tokens->{'logout_url'} = uri_for('/logout');
-	$tokens->{'pedido'} = uri_for('/pedido');
+	$tokens->{'consulta'} = uri_for('/consultar');
 };
 
 
 # Ruteos
 
 get '/' => sub {
-	template 'show_entries.tt', {
-        'msg' => get_flash(),
-        'add_pedido_url' => uri_for('/pedido'),
-        'registros' => \%registros,
-    };
-    #	template 'index';
+    template 'index';
 };
 
 any ['get', 'post'] => '/login' => sub {
@@ -69,13 +65,21 @@ any ['get', 'post'] => '/login' => sub {
 	};
 };
 
+get '/reservas' => sub {
+    template 'show_entries.tt', {
+        'msg' => get_flash(),
+        # 'add_grabar_url' => uri_for('/grabar'),
+        'registros' => \%registros,
+    };
+};
 
-any ['get', 'post'] => '/pedido' => sub {
+any ['get', 'post'] => '/consultar' => sub {
 	my $resultado;
-	my $grabar = 0;
+	my $puede_reservar = 0;
 
 	if ( request->method() eq "POST" ) {
  		my %pedido_IN = params;
+
 		my ( $reporte, $normalizado ) 
 			= Reservas::Gestor::evaluar(%pedido_IN);
 
@@ -86,23 +90,24 @@ any ['get', 'post'] => '/pedido' => sub {
 
 			# Ingresar Pedido
 			if ( $disponible ){
-				$reporte .= " -> ".Reservas::Gestor::reservar($disponible);
-				$grabar = 1;
+				$reporte .= " -> ".Reservas::Gestor::registrar($disponible);
+				$puede_reservar = 1;
 			}
 		}
 
 		# set_flash('fdef');
 		$resultado = $reporte;
 	};
-	template 'pedido.tt', {
-		'resultado' => $resultado,
-		'ingresado' => $grabar,
+	template 'consulta.tt', {
+		'inventario' =>  \%inventario,
+		'resultado'  => $resultado,
+		'puede_reservar'	 => $puede_reservar,
 	}
 };
 
-get '/grabar' => sub {
+get '/reservar' => sub {
 	Reservas::Gestor::grabar();
-	%registros = Reservas::Gestor::cargar();
+	%registros = Reservas::Gestor::registros();
 	template 'show_entries.tt', {
         'msg' => get_flash(),
         'add_pedido_url' => uri_for('/pedido'),
