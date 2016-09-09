@@ -6,7 +6,7 @@ use Data::Dumper;
 use Template;
 
 use Dancer2;
-# set 'database'     => File::Spec->catfile(File::Spec->tmpdir(), 'dancr.db');
+
 set 'session'      => 'Simple';
 set 'template'     => 'template_toolkit';
 set 'layout'       => 'main';
@@ -45,25 +45,7 @@ get '/' => sub {
     template 'index';
 };
 
-any ['get', 'post'] => '/login' => sub {
-	my $err;
-	if ( request->method() eq "POST" ) {
-		# process form input
-		if ( params->{'username'} ne setting('username') ) {
-			$err = "Invalid username";
-		} elsif ( params->{'password'} ne setting('password') ) {              
-			$err = "Invalid password";
-	}else{
-			session 'logged_in' => true;
-			set_flash('You are logged in.');
-			return redirect '/';
-		}
-	}
-	# display login form
-	template 'login.tt', {
-		'err' => $err,
-	};
-};
+
 
 get '/reservas' => sub {
     template 'show_entries.tt', {
@@ -112,6 +94,7 @@ get '/reservar' => sub {
         'msg' => get_flash(),
         'add_pedido_url' => uri_for('/pedido'),
         'registros' => \%registros,
+        
     };
 
 };
@@ -128,6 +111,54 @@ post '/add' => sub {
 
    # set_flash('New entry posted!');
    # redirect '/';
+};
+
+# any ['get', 'post'] => '/login' => sub {
+# 	my $err;
+# 	if ( request->method() eq "POST" ) {
+# 		# process form input
+# 		if ( params->{'username'} ne setting('username') ) {
+# 			$err = "Invalid username";
+# 		} elsif ( params->{'password'} ne setting('password') ) {              
+# 			$err = "Invalid password";
+# 	}else{
+# 			session 'logged_in' => true;
+# 			set_flash('You are logged in.');
+# 			return redirect '/';
+# 		}
+# 	}
+# 	# display login form
+# 	template 'login.tt', {
+# 		'err' => $err,
+# 	};
+# };
+
+any ['get', 'post'] =>  '/login' => sub {
+
+	my $err;
+	if ( request->method() eq "POST" ) {
+        my ($success, $realm) 
+        		= authenticate_user(
+           	 		params->{username}, 
+           	 		params->{password}
+           		)
+        ;
+        if ($success) {
+            session logged_in_user => params->{username};
+            session logged_in_user_realm => $realm;
+            # other code here
+        } else {
+            # authentication failed
+        }
+    };
+    # display login form
+    template 'login.tt', {
+# 		'err' => $err,
+	};    
+};
+    
+any '/logout' => sub {
+    session->destroy;
 };
 
 get '/logout' => sub {

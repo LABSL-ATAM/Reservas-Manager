@@ -1,8 +1,6 @@
 
 [% USE date %]
 [% USE dumper(indent=0, pad="<br>") %]
-
-# use current time and default format
 [% date.format %]
 
 
@@ -29,27 +27,43 @@
 				<strong>[% item %]</strong>
 				
 				<ul class="reservas">
+
 				[% 	FOREACH reserva 
-					IN registros.$item.keys
+					IN 	registros.$item.keys
 				%]
+
 				 	<li id="[% reserva %]"
 				 		class="reserva" 
 				 	>
-					 	<strong>
+					 	<strong class="quien">
 							[% 	registros.$item.$reserva.quien 
-								FILTER ucfirst 
+								FILTER upper 
 							%]
 						</strong>
-						<ul class="cuando">
-						[% 	FOREACH cuando 
-							IN 	registros.$item.$reserva.cuando.
-							split('-')
-						%]
-							<li>
-								[% date.format(cuando) %]
-							</li>
-						[% END %]
-						</ul>	
+
+						<em class="id-reserva small">[% reserva %]</em>
+						
+						<div id="cuando">
+							[% 	SALE = date.format(
+								registros.$item.$reserva.
+								cuando.split('-').first
+							)
+							%]
+							[% 	VUELVE = date.format(
+									registros.$item.$reserva.
+									cuando.split('-').last
+								)
+							%]
+							<span class="sale">
+								[% SALE.split(' ').last %]
+								[% SALE.split(' ').first %]
+							</span>	
+							 | 
+							<span class="vuelve">
+								[% VUELVE.split(' ').last %]
+								[% VUELVE.split(' ').first %]
+							</span>
+						</div>	
 
 					</li>
 				[% END %]

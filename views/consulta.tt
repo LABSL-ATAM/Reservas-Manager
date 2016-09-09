@@ -10,7 +10,7 @@
 [% IF puede_reservar %]
   <br>
   <strong>
-    <a href="/reservar" >Registrar</a>
+    <a href="/reservar" >Reservar</a>
   </strong>
 [% END %]
 </p>
