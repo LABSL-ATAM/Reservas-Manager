@@ -3,55 +3,39 @@
 # all the settings in this file will be loaded at Dancer's startup.
 
 # Your application's name
-appname: "Reservas::Manager"
+appname: 'Reservas::Manager'
 
-# The default layout to use for your application (located in
-# views/layouts/main.tt)
-layout: "main"
+# Layout to use
+layout: 'main'
+# The default layout to use for your application 
+#(located in views/layouts/main.tt)
 
-# when the charset is set to UTF-8 Dancer2 will handle for you
-# all the magic of encoding and decoding. You should not care
-# about unicode within your app when this setting is set (recommended).
-charset: "UTF-8"
+# Charset
+charset: 'UTF-8'
 
-# template engine
-# simple: default and very basic template engine
-# template_toolkit: TT
+# Session engine
+session : 'Simple'
 
-template: "simple"
+# Template engine
+template: 'template_toolkit'
+template_toolkit: TT
+engines:
+  template:
+    template_toolkit:
+      start_tag: '[%'
+      end_tag:   '%]'
 
-# template: "template_toolkit"
-# engines:
-#   template:
-#     template_toolkit:
-#       start_tag: '<%'
-#       end_tag:   '%>'
+# Other Confs
+logger : 'console'
+log : 'debug'
+show_errors : 1
+startup_info : 1
+warnings : 1
 
-# session engine
-#
-# Simple: in-memory session store - Dancer2::Session::Simple
-# YAML: session stored in YAML files - Dancer2::Session::YAML
-#
-# Check out metacpan for other session storage options:
-# https://metacpan.org/search?q=Dancer2%3A%3ASession&search_type=modules
-#
-# Default value for 'cookie_name' is 'dancer.session'. If you run multiple
-# Dancer apps on the same host then you will need to make sure 'cookie_name'
-# is different for each app.
-#
-#engines:
-#  session:
-#    Simple:
-#      cookie_name: testapp.session
-#
-#engines:
-#  session:
-#    YAML:
-#      cookie_name: eshop.session
-#      is_secure: 1
-#      is_http_only: 1
-
+# Plug Ins
 plugins:
+    
+    # Dancer2::Plugin::Auth::Extensible;
     Auth::Extensible:
         realms:
             config:
@@ -69,3 +53,4 @@ plugins:
                       pass: '{SSHA}+2u1HpOU7ak6iBR6JlpICpAUvSpA/zBM'
                       roles:
                         - Tester
+

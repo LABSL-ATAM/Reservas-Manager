@@ -1,18 +1,21 @@
 <h2>Login</h2>
 
-[% IF resultado %]
+[% IF reporte %]
+
   <p class=error>
-  	<strong>Resultado:</strong><br>
-  	[% resultado %]
+  	<strong>Reporte:</strong>
+  	[% reporte %]
+
+    [% IF puede_reservar %]
+      <br>
+      <strong>
+        <a href="/reservar">Reservar</a>
+      </strong>
+    [% END %]
 
 [% END %]
 
-[% IF puede_reservar %]
-  <br>
-  <strong>
-    <a href="/reservar" >Reservar</a>
-  </strong>
-[% END %]
+
 </p>
 
 <form action="[% pedido_url %]" method=post>

@@ -1,45 +1,32 @@
 package Reservas::Manager;
 use Reservas::Gestor;
 
+use strict;
+use warnings;
 use feature 'say';
-use Data::Dumper;
-use Template;
-use Template::Stash;
 
+use Data::Dumper;
+
+# https://metacpan.org/pod/Dancer2::Tutorial
 use Dancer2;
+# http://search.cpan.org/~hornburg/Dancer2-Plugin-Auth-Extensible-0.303/
 use Dancer2::Plugin::Auth::Extensible;
 
-set 'session'      => 'Simple';
-set 'template'     => 'template_toolkit';
-set 'layout'       => 'main';
-set 'logger'       => 'console';
-set 'log'          => 'debug';
-set 'show_errors'  => 1;
-set 'startup_info' => 1;
-set 'warnings'     => 1;
-set 'username'     => 'admin';
-set 'password'     => 'password';
 our $VERSION = '0.1';
 
 
-
-
-
-# https://metacpan.org/pod/Dancer2::Tutorial
-
 my $flash;
+
 my %inventario = Reservas::Gestor::inventario();
-my %registros  = pre_procesar(
-		Reservas::Gestor::registros()
-	);
+
 
 # Hooks
 
 hook before_template_render => sub {
 	my $tokens = shift;
 	# $tokens->{'css_url'} = request->base . 'css/style.css';
-	#$tokens->{'login_url'}  = uri_for('/login');
-	##$tokens->{'logout_url'} = uri_for('/logout');
+	$tokens->{'login_url'}  = uri_for('/login');
+	$tokens->{'logout_url'} = uri_for('/logout');
 	$tokens->{'consulta'}   = uri_for('/consultar');
 };
 
@@ -51,6 +38,11 @@ get '/' => sub {
 };
 
 get '/reservas' => sub {
+
+	my %registros  = pre_procesar(
+		Reservas::Gestor::registros()
+	);
+
 	template 'show_entries.tt', {
 		'msg' => get_flash(),
 		# 'add_grabar_url' => uri_for('/grabar'),
@@ -59,10 +51,11 @@ get '/reservas' => sub {
 };
 
 any ['get', 'post'] => '/consultar' => sub {
-	my $resultado;
 	my $puede_reservar = 0;
+	my $resultado = '';
 
 	if ( request->method() eq "POST" ) {
+
 		my %pedido_IN = params;
 
 		my ( $reporte, $normalizado ) 
@@ -75,7 +68,8 @@ any ['get', 'post'] => '/consultar' => sub {
 
 			# Ingresar Pedido
 			if ( $disponible ){
-				$reporte .= " -> ".Reservas::Gestor::registrar($disponible);
+				$reporte .= " -> ".
+					Reservas::Gestor::registrar($disponible);
 				$puede_reservar = 1;
 			}
 		}
@@ -84,19 +78,18 @@ any ['get', 'post'] => '/consultar' => sub {
 		$resultado = $reporte;
 	};
 	template 'consulta.tt', {
-		'inventario' =>  \%inventario,
-		'resultado'  => $resultado,
-		'puede_reservar'	 => $puede_reservar,
+		'inventario'     =>  \%inventario,
+		'reporte'      => $resultado,
+		'puede_reservar' => $puede_reservar,
 	}
 };
 
-get '/reservar' => sub {
+get '/reservar' => require_login sub {
 	Reservas::Gestor::grabar();
-	%registros = Reservas::Gestor::registros();
+	# my %registros = Reservas::Gestor::registros();
 	template 'show_entries.tt', {
 		'msg' => get_flash(),
-		'add_pedido_url' => uri_for('/pedido'),
-		'registros' => \%registros,
+		'add_consultar_url' => uri_for('/consultar'),
 	};
 
 };
@@ -123,12 +116,8 @@ sub get_flash {
 	return $msg;
 }
 
-### Autentification
-sub login_page_handler{
-	# return 1,1;
-}
-
 sub pre_procesar{
+	# ordernar, y filtrar los registros
 	my %registros = @_;
 	# my ($hash) = @_; 
 
