@@ -1,6 +1,6 @@
 
 [% USE date %]
-[% USE dumper(indent=0, pad="<br>") %]
+[% USE Dumper(indent=1, pad="<br>") %]
 [% date.format %]
 
 
@@ -28,10 +28,16 @@
 				
 				<ul class="reservas">
 
-				[% 	FOREACH reserva 
-					IN 	registros.$item.keys
-				%]
+				[% 	#reservdas = registros.$item.keys %]
+				[%  #Dumper.dump(reservdas) %]
 
+				[% 	reservas = registros.$item.keys %]
+
+				[% 	FOREACH reserva IN reservas %]
+
+					
+
+				
 				 	<li id="[% reserva %]"
 				 		class="reserva" 
 				 	>
@@ -75,6 +81,6 @@
 
 [% ELSE %]
 
-  <em>Unbelievable.  No entries here so far</em>
+	<em>Unbelievable.  No entries here so far</em>
 
 [% END %]

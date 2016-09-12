@@ -2,7 +2,7 @@
 
 [% IF resultado %]
   <p class=error>
-  	<strong>Resultado:</strong> 
+  	<strong>Resultado:</strong><br>
   	[% resultado %]
 
 [% END %]

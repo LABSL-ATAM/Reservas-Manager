@@ -1,10 +1,7 @@
 package Reservas::Gestor;
 
-#!/usr/bin/perl
 use strict;
 use warnings;
-
-# use v5.20;
 use Data::Dumper;
 use Data::Uniqid qw ( luniqid );
 use File::Slurp;
@@ -14,9 +11,6 @@ my $json = JSON->new;
 
 # # Args / Params
 my $verbose = 0;
-# if( 'v' ~~ @ARGV ){
-#   my $verbose = 1;
-# }
 
 # Defaults Globales
 my ($sec,$min,$hour,$day,$month,$yr19,@rest) = localtime(time);
@@ -30,8 +24,7 @@ my %registros = registros();
 print Dumper( %registros ) if $verbose;
 
 
-
-grabar();
+# grabar();
 
 # Subrutinas ### ### ###
 
@@ -80,7 +73,7 @@ sub evaluar{
 
 	}else {
 		$item_existe = 1;
-		if( ($duracion >= $limite_duracion) || ($duracion <= 0)  ){
+		if( ($duracion > $limite_duracion) || ($duracion <= 0)  ){
 			$porque = "Duracion: 0 < $duracion? > $limite_duracion";
 
 		}else {

@@ -4,8 +4,10 @@ use Reservas::Gestor;
 use feature 'say';
 use Data::Dumper;
 use Template;
+use Template::Stash;
 
 use Dancer2;
+use Dancer2::Plugin::Auth::Extensible;
 
 set 'session'      => 'Simple';
 set 'template'     => 'template_toolkit';
@@ -15,44 +17,45 @@ set 'log'          => 'debug';
 set 'show_errors'  => 1;
 set 'startup_info' => 1;
 set 'warnings'     => 1;
-
 set 'username'     => 'admin';
 set 'password'     => 'password';
 our $VERSION = '0.1';
 
 
+
+
+
 # https://metacpan.org/pod/Dancer2::Tutorial
 
 my $flash;
-my %registros  = Reservas::Gestor::registros();
 my %inventario = Reservas::Gestor::inventario();
+my %registros  = pre_procesar(
+		Reservas::Gestor::registros()
+	);
 
 # Hooks
 
 hook before_template_render => sub {
 	my $tokens = shift;
-
 	# $tokens->{'css_url'} = request->base . 'css/style.css';
-	$tokens->{'login_url'} = uri_for('/login');
-	$tokens->{'logout_url'} = uri_for('/logout');
-	$tokens->{'consulta'} = uri_for('/consultar');
+	#$tokens->{'login_url'}  = uri_for('/login');
+	##$tokens->{'logout_url'} = uri_for('/logout');
+	$tokens->{'consulta'}   = uri_for('/consultar');
 };
 
 
 # Ruteos
 
 get '/' => sub {
-    template 'index';
+	template 'index';
 };
 
-
-
 get '/reservas' => sub {
-    template 'show_entries.tt', {
-        'msg' => get_flash(),
-        # 'add_grabar_url' => uri_for('/grabar'),
-        'registros' => \%registros,
-    };
+	template 'show_entries.tt', {
+		'msg' => get_flash(),
+		# 'add_grabar_url' => uri_for('/grabar'),
+		'registros' => \%registros,
+	};
 };
 
 any ['get', 'post'] => '/consultar' => sub {
@@ -60,7 +63,7 @@ any ['get', 'post'] => '/consultar' => sub {
 	my $puede_reservar = 0;
 
 	if ( request->method() eq "POST" ) {
- 		my %pedido_IN = params;
+		my %pedido_IN = params;
 
 		my ( $reporte, $normalizado ) 
 			= Reservas::Gestor::evaluar(%pedido_IN);
@@ -91,85 +94,24 @@ get '/reservar' => sub {
 	Reservas::Gestor::grabar();
 	%registros = Reservas::Gestor::registros();
 	template 'show_entries.tt', {
-        'msg' => get_flash(),
-        'add_pedido_url' => uri_for('/pedido'),
-        'registros' => \%registros,
-        
-    };
+		'msg' => get_flash(),
+		'add_pedido_url' => uri_for('/pedido'),
+		'registros' => \%registros,
+	};
 
 };
 
-post '/add' => sub {
-   # if ( not session('logged_in') ) {
-   #    send_error("Not logged in", 401);P
-   # }
-
-   # my $db = connect_db();
-   # my $sql = 'insert into entries (title, text) values (?, ?)';
-   # my $sth = $db->prepare($sql) or die $db->errstr;
-   # $sth->execute(params->{'title'}, params->{'text'}) or die $sth->errstr;
-
-   # set_flash('New entry posted!');
-   # redirect '/';
-};
-
-# any ['get', 'post'] => '/login' => sub {
-# 	my $err;
-# 	if ( request->method() eq "POST" ) {
-# 		# process form input
-# 		if ( params->{'username'} ne setting('username') ) {
-# 			$err = "Invalid username";
-# 		} elsif ( params->{'password'} ne setting('password') ) {              
-# 			$err = "Invalid password";
-# 	}else{
-# 			session 'logged_in' => true;
-# 			set_flash('You are logged in.');
-# 			return redirect '/';
-# 		}
-# 	}
-# 	# display login form
-# 	template 'login.tt', {
-# 		'err' => $err,
-# 	};
-# };
-
-any ['get', 'post'] =>  '/login' => sub {
-
-	my $err;
-	if ( request->method() eq "POST" ) {
-        my ($success, $realm) 
-        		= authenticate_user(
-           	 		params->{username}, 
-           	 		params->{password}
-           		)
-        ;
-        if ($success) {
-            session logged_in_user => params->{username};
-            session logged_in_user_realm => $realm;
-            # other code here
-        } else {
-            # authentication failed
-        }
-    };
-    # display login form
-    template 'login.tt', {
-# 		'err' => $err,
-	};    
-};
-    
-any '/logout' => sub {
-    session->destroy;
-};
-
-get '/logout' => sub {
-   app->destroy_session;
-   set_flash('You are logged out.');
-   redirect '/';
+get '/users' => require_login sub {
+	my $user = logged_in_user;
+	return "Hi there, $user->{username}";
 };
 
 
-# Subfunciones
 
+
+## Subfunciones
+
+### Notification Handling
 sub set_flash {
 	my $message = shift;
 	$flash = $message;
@@ -180,6 +122,22 @@ sub get_flash {
 	$flash = "";
 	return $msg;
 }
+
+### Autentification
+sub login_page_handler{
+	# return 1,1;
+}
+
+sub pre_procesar{
+	my %registros = @_;
+	# my ($hash) = @_; 
+
+	# return [ sort { $hash->{$a} cmp $hash->{$b} } keys %{$hash} ];
+
+	return %registros;
+}
+
+
 
 true;
 

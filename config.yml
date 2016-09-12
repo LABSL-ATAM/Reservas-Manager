@@ -52,29 +52,20 @@ template: "simple"
 #      is_http_only: 1
 
 plugins:
-        Auth::Extensible:
-            # Set to 1 if you want to disable the use of roles (0 is default)
-            disable_roles: 0
-            # After /login: If no return_url is given: land here ('/' is default)
-            user_home_page: '/user'
-            # After /logout: If no return_url is given: land here (no default)
-            exit_page: '/'
-            
-            # List each authentication realm, with the provider to use and the
-            # provider-specific settings (see the documentation for the provider
-            # you wish to use)
-
-            realms:
-                config:
-                    provider: Config
-                    users:
-                        - user: dave
-                          pass: supersecret
-                          roles:
-                            - Developer
-                            - Manager
-                            - BeerDrinker
-                        - user: bob
-                          pass: '{SSHA}+2u1HpOU7ak6iBR6JlpICpAUvSpA/zBM'
-                          roles:
-                            - Tester
+    Auth::Extensible:
+        realms:
+            config:
+                provider: Config
+                users:
+                    - user: dave
+                      username: Dave
+                      pass: supersecret
+                      roles:
+                        - Developer
+                        - Manager
+                        - BeerDrinker
+                    - user: bob
+                      username: Bobi
+                      pass: '{SSHA}+2u1HpOU7ak6iBR6JlpICpAUvSpA/zBM'
+                      roles:
+                        - Tester
