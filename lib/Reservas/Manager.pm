@@ -16,7 +16,6 @@ our $VERSION = '0.1';
 
 
 my $flash;
-
 my %inventario = Reservas::Gestor::inventario();
 
 
@@ -109,21 +108,25 @@ sub set_flash {
 	my $message = shift;
 	$flash = $message;
 }
-
 sub get_flash {
 	my $msg = $flash;
 	$flash = "";
 	return $msg;
 }
 
+# Registros Filters 
 sub pre_procesar{
 	# ordernar, y filtrar los registros
-	my %registros = @_;
+	my %registros_RAW = @_;
+	my %r;
+
+	print Dumper(%registros_RAW);
+		
 	# my ($hash) = @_; 
 
 	# return [ sort { $hash->{$a} cmp $hash->{$b} } keys %{$hash} ];
 
-	return %registros;
+	return %registros_RAW;
 }
 
 
