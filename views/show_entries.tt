@@ -22,21 +22,15 @@
 [% IF registros.size %]
 
 	<ul class=registros>
-		[% FOREACH item IN registros.keys %]
+		[% FOREACH item IN query.keys %]
 			<li class="item">
 				<strong>[% item %]</strong>
 				
 				<ul class="reservas">
 
-				[% 	#reservdas = registros.$item.keys %]
-				[%  #Dumper.dump(reservdas) %]
 
-				[% 	reservas = registros.$item.keys %]
 
-				[% 	FOREACH reserva IN reservas %]
-
-					
-
+				[% FOREACH reserva IN query.$item.reservas %]
 				
 				 	<li id="[% reserva %]"
 				 		class="reserva" 

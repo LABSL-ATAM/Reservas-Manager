@@ -14,7 +14,7 @@ use Dancer2::Plugin::Auth::Extensible;
 
 our $VERSION = '0.1';
 
-my $time = time;
+
 my $flash;
 my %inventario = Reservas::Gestor::inventario();
 
@@ -38,13 +38,14 @@ get '/' => sub {
 
 get '/reservas' => sub {
 
-	my %registros  = Reservas::Gestor::registros();
-	my %query  = query();
+	my %registros  = pre_procesar(
+		Reservas::Gestor::registros()
+	);
+
 	template 'show_entries.tt', {
 		'msg' => get_flash(),
 		# 'add_grabar_url' => uri_for('/grabar'),
 		'registros' => \%registros,
-		'query' => \%query,
 	};
 };
 
@@ -113,33 +114,32 @@ sub get_flash {
 	return $msg;
 }
 
-# Ordenar y Filtrar Reservas viejas... 
-sub query{
-	my %registro = Reservas::Gestor::registros();
-	my %RESULTADO;
+# Ordenar y Filtrar Reservas... 
+sub pre_procesar{
+	my %registros_RAW = @_;
+	my %r;
 	
-	foreach my $item (keys %registro) {
-		my @RESERVAS;		
+	foreach my $item (keys %registros_RAW) {
+        	print $item, "\n";
+		
 		foreach my $reserva (
-			sort { 
-				$registro{$item}{$a}->{cuando} cmp 
-				$registro{$item}{$b}->{cuando}  
-			}
-			keys %{$registro{$item}}
-		){
-			
-			my ($sale, $vuelve) = split(
-				/-/, 
-				$registro{$item}{$reserva}{'cuando'}
-			);	
-			if($vuelve >= $time){
-				push @{$RESULTADO{$item}{'reservas'}}, $reserva;	
-			}	
-		}
+		#sort { $alumnos{$a}->{apellido} cmp $alumnos{$b}->{apellido} }
+			keys %{$registros_RAW{$item}}
+		) {
+			print "\t",$reserva,"\n";
+			print "\t",$registros_RAW{$item}{$reserva}{'cuando'},"\n";
     		
-	}
-	return %RESULTADO;
+		}
+    	}
+	
+		
+	# my ($hash) = @_; 
+
+	# return [ sort { $hash->{$a} cmp $hash->{$b} } keys %{$hash} ];
+
+	return %registros_RAW;
 }
+
 
 
 true;
