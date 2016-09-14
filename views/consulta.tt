@@ -7,7 +7,7 @@
   	[% reporte %]
 
     [% IF puede_reservar %]
-      <br>
+      
       <strong>
         <a href="/reservar">Reservar</a>
       </strong>
@@ -19,58 +19,119 @@
 </p>
 
 <form action="[% pedido_url %]" method=post>
+	<div class="form-group">
+		<div class="form-group">
+			<label for="itemSelect">
+				Recurso / Item:
+			</label>
+			<select class="form-control" id="itemSelect" name="item">
+				[% FOREACH item IN inventario.keys %]
+					<option>[% item %]</option>
+				[% END %]
+			</select>
+			<small id="itemHelp" class="form-text text-muted">
+				Seleccione el recurso que desea reservar.
+			</small>
+		</div>
 
-    Item: 
-    <select name=item><br>
-      [% FOREACH item IN inventario.keys %]
-        <option value="[% item %]">
-          [% item %]
-        </option>
-      [% END %]
-    </select><br>
+		<div class="form-group">
+			<label for="mesSelect">
+				Mes:
+			</label>
+			<select class="form-control" id="mesSelect" name="mes">
+					<option value="1">Enero</option>
+					<option value="2">Febrero</option>
+					<option value="3">Marzo</option>
+					<option value="4">Abril</option>
+					<option value="5">Mayo</option>
+					<option value="6">Junio</option>
+					<option value="7">Julio</option>
+					<option value="8">Agosto</option>
+					<option value="9">Septiembre</option>
+					<option value="10">Octubre</option>
+					<option value="11">Noviembre</option>
+					<option value="12">Diciembre</option>
+			</select>
+			<small id="mesHelp" class="form-text text-muted">
+				Indique en que mes acontence la reserva.
+			</small>
+		</div>
 
-    Mes:
-    <select name=mes>
-      [% FOREACH mes IN [1..12] %]
-        <option value="[% mes %]">
-          [% mes %]
-        </option>
-      [% END %]
-    </select>
-    <br>
+		<div class="form-group">
+			<label for="diaSelect">
+				Dia:
+			</label>
+			<select class="form-control" id="diaSelect" name="dia">
+				[% FOREACH dia IN [1..31] %]
+					<option>[% dia %]</option>
+				[% END %]
+			</select>
+			<small id="diaHelp" class="form-text text-muted">
+				Indique en que dia comienza la reserva.
+			</small>
+		</div>
 
-    Dia:
-    <select name=dia>
-      [% FOREACH dia IN [1..31] %]
-        <option value="[% dia %]">
-          [% dia %]
-        </option>
-      [% END %]
-    </select>
-    <br>
-   	Hora:
-    <select name=hora>
-      [% FOREACH hora IN [1..24] %]
-        <option value="[% hora %]">
-          [% hora %]
-        </option>
-      [% END %]
-    </select>
-    <br>
-   	Duracion:
-    <select name=duracion>
-        <option value="6">6</option>
-        <option value="12">12</option>
-        <option value="24">24</option>
-    </select>
-    <br>
-    Quien: 
-    <input type=text name=quien value=pepe>
-    <br>
+		<div class="form-group">
+			<label for="horaSelect">
+				Hora:
+			</label>
+			<select 
+				class="form-control" 
+				id="horaSelect" 
+				name="hora"
+			>
+				[% FOREACH hora IN [9..22] %]
+					<option value="[% hora %]">[% hora %]hs</option>
+				[% END %]
+			</select>
+			<small id="quienHelp" class="form-text text-muted">
+				A que hora comienza la reserva. 	
+			</small>
+		</div>
+		
+		<div class="form-group">
+			<label for="duracionSelect">
+				Duracion:
+			</label>
+			<select 
+				class="form-control" 
+				id="duracionSelect" 
+				name="duracion"
+			>
+				[% FOREACH duracion IN [4,6,8,12,24,48,72] %]
+					<option value="[% duracion %]">
+						[% duracion %]hs
+					</option>
+				[% END %]
+			</select>
+			<small id="quienHelp" class="form-text text-muted">
+				Por cuantas horas desdea reservar el recurso.
+			</small>
+		</div>
+		
+		<div class="form-group">
+			<label for="quienInput">Quien:</label>
+			<input id="quienInput" 
+				type="text" 
+				class="form-control" 
+				aria-describedby="quienHelp" 
+				placeholder="Nombre y/o apellido"
+				name="quien"
+			>
+			<small id="quienHelp" class="form-text text-muted">
+				Indetifique a la persona responsable de la reserva. 	
+			</small>
+		</div>	
 
-    Comentario: <br>
-<textarea rows="3" cols="50" name=comentario></textarea>
-    
-    <br>
-    <input type=submit value=Consultar>
+		<div class="form-group">
+			<label for="exampleTextarea">¿Algun Comentario?</label>
+			<textarea id="exampleTextarea" 
+				class="form-control" 
+				rows="3"
+				name="comentario"
+			></textarea>
+		</div>
+	</div>
+  	<button type="submit" class="btn btn-primary">Consultar</button>
+
 </form>

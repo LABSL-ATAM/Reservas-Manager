@@ -15,7 +15,7 @@ my $verbose = 0;
 # Defaults Globales
 my ($sec,$min,$hour,$day,$month,$yr19,@rest) = localtime(time);
 my $anio = $yr19+1900; # año actual ¿salvo q se indique?
-my $limite_duracion = 24;
+my $limite_duracion = 72;
 
 # Datos 
 my %inventario = inventario();
@@ -44,15 +44,14 @@ sub registros{
 
 sub evaluar{
 	my %pedido = @_;
-
+	print Dumper(%pedido);
 	my $item 		= $pedido{item};
 	my $mes 		= $pedido{mes};
 	my $dia 		= $pedido{dia};
 	my $hora 		= $pedido{hora};
-	my $duracion 	= $pedido{duracion};
+	my $duracion 		= $pedido{duracion};
 	my $quien 		= $pedido{quien};
-	my $comentario 	= $pedido{comentario};
-
+	my $comentario 		= $pedido{comentario};
 
 	# Condiciones del pedido
 	my $item_existe;
@@ -73,8 +72,8 @@ sub evaluar{
 
 	}else {
 		$item_existe = 1;
-		if( ($duracion > $limite_duracion) || ($duracion <= 0)  ){
-			$porque = "Duracion: 0 < $duracion? > $limite_duracion";
+		if( ($duracion > $limite_duracion) || ($duracion < 1)  ){
+			$porque = "Duracion: 1 < $duracion? > $limite_duracion";
 
 		}else {
 			$duracion_correcta = 1;
