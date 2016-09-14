@@ -44,7 +44,7 @@ sub registros{
 
 sub evaluar{
 	my %pedido = @_;
-	print Dumper(%pedido);
+	# print Dumper(%pedido);
 	my $item 		= $pedido{item};
 	my $mes 		= $pedido{mes};
 	my $dia 		= $pedido{dia};
