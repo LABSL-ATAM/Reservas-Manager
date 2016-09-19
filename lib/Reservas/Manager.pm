@@ -7,9 +7,7 @@ use feature 'say';
 
 use Data::Dumper;
 
-# https://metacpan.org/pod/Dancer2::Tutorial
 use Dancer2;
-# http://search.cpan.org/~hornburg/Dancer2-Plugin-Auth-Extensible-0.303/
 use Dancer2::Plugin::Auth::Extensible;
 
 our $VERSION = '0.1';
@@ -26,21 +24,17 @@ hook before_template_render => sub {
 	# $tokens->{'css_url'} = request->base . 'css/style.css';
 	$tokens->{'login_url'}  = uri_for('/login');
 	$tokens->{'logout_url'} = uri_for('/logout');
-	$tokens->{'consulta'}   = uri_for('/consultar');
+	$tokens->{'consulta_url'}   = uri_for('/consultar');
+	$tokens->{'reserva_url'}   = uri_for('/reservar');
 };
 
 
 # Ruteos
 
-get '/' => sub {
-	template 'index';
-};
-
-get '/reservas' => sub {
-
+get '/' => require_login sub {
 	my %registros  = Reservas::Gestor::registros();
 	my %query  = query();
-	template 'show_entries.tt', {
+	template 'index.tt', {
 		'msg' => get_flash(),
 		# 'add_grabar_url' => uri_for('/grabar'),
 		'registros' => \%registros,
@@ -48,7 +42,7 @@ get '/reservas' => sub {
 	};
 };
 
-any ['get', 'post'] => '/consultar' => sub {
+any ['get', 'post'] => '/consultar' => require_login sub {
 	my $puede_reservar = 0;
 	my $resultado = '';
 
@@ -66,13 +60,13 @@ any ['get', 'post'] => '/consultar' => sub {
 
 			# Ingresar Pedido
 			if ( $disponible ){
-				$reporte .= " -> ".
-					Reservas::Gestor::registrar($disponible);
+			#	$reporte .= " -> ".
+			#		Reservas::Gestor::registrar($disponible);
 				$puede_reservar = 1;
 			}
 		}
 
-		# set_flash('fdef');
+		set_flash($reporte);
 		$resultado = $reporte;
 	};
 	template 'consulta.tt', {
@@ -83,11 +77,11 @@ any ['get', 'post'] => '/consultar' => sub {
 };
 
 get '/reservar' => require_login sub {
-	Reservas::Gestor::grabar();
+	# Reservas::Gestor::grabar();
 	# my %registros = Reservas::Gestor::registros();
-	template 'show_entries.tt', {
+	template 'reservar.tt', {
 		'msg' => get_flash(),
-		'add_consultar_url' => uri_for('/consultar'),
+		#'add_consultar_url' => uri_for('/consultar'),
 	};
 
 };

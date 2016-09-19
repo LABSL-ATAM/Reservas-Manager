@@ -1,22 +1,20 @@
-<h2>Login</h2>
+<h1>Consultar Disponibilidad</h1>
 
 [% IF reporte %]
-
-  <p class=error>
-  	<strong>Reporte:</strong>
+  	<p class=error>
+  		<strong>Reporte:</strong>
   	[% reporte %]
 
-    [% IF puede_reservar %]
-      
-      <strong>
-        <a href="/reservar">Reservar</a>
-      </strong>
-    [% END %]
+	[% IF puede_reservar %]
+      		<strong>
+        		<a href="/reservar">Reservar</a>
+      		</strong>
+    	[% END %]
 
+	</p>
 [% END %]
 
 
-</p>
 
 <form action="[% pedido_url %]" method=post>
 	<div class="form-group">
@@ -25,7 +23,7 @@
 				Recurso / Item:
 			</label>
 			<select class="form-control" id="itemSelect" name="item">
-				[% FOREACH item IN inventario.keys %]
+				[% FOREACH item IN inventario.keys.sort %]
 					<option>[% item %]</option>
 				[% END %]
 			</select>
