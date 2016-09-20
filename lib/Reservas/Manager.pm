@@ -51,19 +51,18 @@ any ['get', 'post'] => '/consultar' => require_login sub {
 
 		my %pedido_IN = params;
 
-		my ( $reporte, $normalizado ) 
+		my ( $reporte, $pedido_normalizado ) 
 			= Reservas::Gestor::evaluar(%pedido_IN);
 
-		if ( $normalizado ) {
-			my ($msj,$disponible)
-				= Reservas::Gestor::consultar($normalizado);
+		if ( $pedido_normalizado ) {
+			my ($msj,$pedido_disponible)
+				= Reservas::Gestor::consultar($pedido_normalizado);
 			$reporte .=  " -> ".$msj;
 
 			# Ingresar Pedido
-			if ( $disponible ){
-			#	$reporte .= " -> ".
-			#		Reservas::Gestor::registrar($disponible);
+			if ( $pedido_disponible ){
 				$puede_reservar = 1;
+				session 'pedido' => $pedido_disponible;
 			}
 		}
 		set_flash($reporte);
@@ -79,15 +78,29 @@ any ['get', 'post'] => '/consultar' => require_login sub {
 };
 
 get '/reservar' => require_login sub {
-	# Reservas::Gestor::grabar();
-	# my %registros = Reservas::Gestor::registros();
 	template 'reservar.tt', {
 		'msg' => get_flash(),
-		#'add_consultar_url' => uri_for('/consultar'),
+		'grabar_url' => uri_for('/grabar'),
 	};
 
 };
 
+get '/grabar' => require_login sub {
+	if (session->{'data'}{'pedido'}){
+		my $pedido = session->{'data'}{'pedido'};
+		my $reporte .= Reservas::Gestor::registrar($pedido);
+		Reservas::Gestor::grabar();
+		set_flash($reporte);
+	}
+	my %registros = Reservas::Gestor::registros();
+	my %query  = query();
+	template 'index.tt', {
+		'msg' => get_flash(),
+		'registros' => \%registros,
+		'query' => \%query,
+	};
+
+};
 get '/users' => require_login sub {
 	my $user = logged_in_user;
 	return "Hi there, $user->{username}";

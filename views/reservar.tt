@@ -1,0 +1,56 @@
+
+[% USE date %]
+
+[% IF session.pedido %]
+	<div class="info-reserva jumbotron">
+		<p class="item lead">
+			Esta a punto de reservar:
+			<strong>[% session.pedido.item %]</strong>
+		</p>
+		<p class="cuando">
+			[%	SALE = date.format(
+					cuando.split('-').first
+				)
+			%]
+			[% 	VUELVE = date.format(
+					session.pedido.
+					cuando.split('-').last
+				)
+			%]
+
+			Desde el día: 
+				<strong>[% SALE.split(' ').last %]</strong>
+			a las:
+				<strong>[% SALE.split(' ').first %]</strong>
+			<br> 
+
+			Hasta el día:
+			<strong>[% VUELVE.split(' ').last %]</strong>
+			a las:
+			<strong>[% VUELVE.split(' ').first %]</strong>
+
+
+		</p>
+		
+		[% IF  session.pedido.quien %]
+			<p class="quien">
+				A nombre de:
+				<strong>[% session.pedido.quien %]</strong>
+			</p>
+		[% END %]
+
+		[% IF session.pedido.comentario %]
+			<p class="coment">
+				[% session.pedido.comentario %]
+			</p>
+		[% END %]
+			
+		<a href="[% grabar_url %]" role="button" class="btn btn-success">OK</a>
+		<a href="/" role="button" class="btn btn-outline-danger">CANCELAR</a>
+	</div>
+
+
+
+
+[% END %]
+

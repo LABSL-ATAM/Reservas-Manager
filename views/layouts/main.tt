@@ -42,7 +42,7 @@
 	.nav a{
 		text-transform:	uppercase;
 		font-weight:bold;
-		margin-left: 20px;
+		margin-right: 20px;
 	}
 	h1{
 		margin: 40px 0;
