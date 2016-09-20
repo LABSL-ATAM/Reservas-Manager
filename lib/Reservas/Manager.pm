@@ -36,6 +36,7 @@ get '/' => require_login sub {
 	my %query  = query();
 	template 'index.tt', {
 		'msg' => get_flash(),
+		'page_title'	=> 'Reservas de Recursos',
 		# 'add_grabar_url' => uri_for('/grabar'),
 		'registros' => \%registros,
 		'query' => \%query,
@@ -65,14 +66,15 @@ any ['get', 'post'] => '/consultar' => require_login sub {
 				$puede_reservar = 1;
 			}
 		}
-
 		set_flash($reporte);
 		$resultado = $reporte;
 	};
 	template 'consulta.tt', {
-		'inventario'     =>  \%inventario,
-		'reporte'      => $resultado,
-		'puede_reservar' => $puede_reservar,
+		'msg'		=> get_flash(),
+		'page_title'	=> 'Consultar Disponibilidad',
+		'inventario'    =>  \%inventario,
+		'reporte'      	=> $resultado,
+		'puede_reservar'=> $puede_reservar,
 	}
 };
 

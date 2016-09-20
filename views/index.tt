@@ -18,6 +18,8 @@
 -->
 [% END %]
 
+
+
 [% IF registros.size %]
 	<table class="registros table table-hover table-sm">
 		<thead class="thead-inverse">

@@ -5,12 +5,17 @@
 		<!-- <meta charset="utf-8"> -->
 		<meta charset="[% settings.charset %]">
 
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="viewport" 
+			content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<title>Reservas::Manager</title>
 
 		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+		<link rel="stylesheet" 
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" 
+			integrity="2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" 
+			crossorigin="anonymous"
+		>
 
 	</head>
 	<style type="text/css">
@@ -27,6 +32,21 @@
 		border-top: 1px solid rgba(0,0,0,.15);
 		border-bottom: 1px solid rgba(0,0,0,.15);
 	}
+	header,footer{
+		border-radius: 0px !important;
+		background: #007C85;
+	}
+	header a,footer a{
+		color:#FFF;
+	}
+	.nav a{
+		text-transform:	uppercase;
+		font-weight:bold;
+		margin-left: 20px;
+	}
+	h1{
+		margin: 40px 0;
+	}	
 	.registros, .registros th{
 		text-align: center;
 	}
@@ -45,11 +65,21 @@
 		
 		<section class="container">
 			<div class="page">
+				[% IF page_title %]
+					<h1>[% page_title %]</h1>
+				[% END %]
 				[% IF msg %]
-					<div 
-						class="alert alert-danger flash" 
-						role="alert"
-					>
+					[% IF puede_reservar %]
+						<div 
+							class="alert alert-success flash" 
+							role="alert"
+						>
+					[% ELSE %]
+						<div 
+							class="alert alert-danger flash" 
+							role="alert"
+						>
+					[% END %]
 						[% msg %]
 					</div>
 				[% END %]

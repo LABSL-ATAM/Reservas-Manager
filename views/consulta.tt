@@ -1,18 +1,11 @@
-<h1>Consultar Disponibilidad</h1>
 
-[% IF reporte %]
-  	<p class=error>
-  		<strong>Reporte:</strong>
-  	[% reporte %]
 
-	[% IF puede_reservar %]
-      		<strong>
-        		<a href="/reservar">Reservar</a>
-      		</strong>
-    	[% END %]
-
-	</p>
+[% IF puede_reservar %]
+	<strong>
+		<a href="/reservar">RESERVAR</a>
+	</strong>
 [% END %]
+
 
 
 
