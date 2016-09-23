@@ -42,6 +42,21 @@ get '/' => require_login sub {
 		'query' => \%query,
 	};
 };
+# Agregado: Cada ID con su render...
+get '/ID/:id' => require_login sub {
+	my %registros  = Reservas::Gestor::registros();
+	my %query  = query();
+    my $id = params->{'id'};
+	template 'puntual.tt', {
+		'msg' => get_flash(),
+		'page_title'	=> 'Reserva ' . $id,
+		# 'add_grabar_url' => uri_for('/grabar'),
+		'registros' => \%registros,
+		'query' => \%query,
+        'filtro_id' => $id,
+        #'filtro_id_cosa' => $cosa,
+	};
+};
 
 any ['get', 'post'] => '/consultar' => require_login sub {
 	my $puede_reservar = 0;
