@@ -186,12 +186,8 @@ sub es_bisiesto{
 	my $y = shift;
 	my $bisiesto = 0;
 	if( $y =~ /^\d+?$/ ) {
-		if( !($y % 400) ){
-			$bisiesto = 1;
-		}elsif( !($y % 100) ){
-			$bisiesto = 0;
-		}elsif( !($y % 4) ){
-			$bisiesto = 1;
+		if( !($y % 4 )){
+			$bisiesto++;
 		}
 	}
 	return $bisiesto;
