@@ -106,6 +106,7 @@ get '/grabar' => require_login sub {
 		my $reporte .= Reservas::Gestor::registrar($pedido);
 		Reservas::Gestor::grabar();
 		set_flash($reporte);
+		delete session->{'data'}{'pedido'};
 	}
 	my %registros = Reservas::Gestor::registros();
 	my %query  = query();
