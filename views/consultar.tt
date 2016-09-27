@@ -1,15 +1,11 @@
 
-
-[% IF puede_reservar %]
+[% IF session.pedido %]
 	<strong>
-		<a href="/reservar">RESERVAR</a>
+		<a href="/pre-reserva">RESERVAR</a>
 	</strong>
-[% END %]
+[% END  %]
 
-
-
-
-<form action="[% pedido_url %]" method=post>
+<form action="/consultar" method=post>
 	<div class="form-group">
 		<div class="form-group">
 			<label for="itemSelect">

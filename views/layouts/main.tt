@@ -68,8 +68,9 @@
 				[% IF page_title %]
 					<h1>[% page_title %]</h1>
 				[% END %]
+				
 				[% IF msg %]
-					[% IF puede_reservar %]
+					[% IF session.pedido %]
 						<div 
 							class="alert alert-success flash" 
 							role="alert"
@@ -100,13 +101,6 @@
 					[% ELSE %]
 						<a href="[% logout_url %]">Log OUT</a>
 					[% END %]
-				</div>
-				<div class="copy">
-					Powered by 
-					<a href="http://perldancer.org/">
-						Dancer2
-					</a>
-					[% dancer_version %]
 				</div>
 			</div>
 		</footer>

@@ -35,7 +35,7 @@ hook before_template_render => sub {
 	$tokens->{'login_url'}  = uri_for('/login');
 	$tokens->{'logout_url'} = uri_for('/logout');
 	$tokens->{'consulta_url'}   = uri_for('/consultar');
-	$tokens->{'reserva_url'}   = uri_for('/reservar');
+	$tokens->{'res'}   = uri_for('/reservar');
 };
 
 
@@ -56,53 +56,47 @@ get '/' => require_login sub {
 get '/ID/:id' => require_login sub {
 	my %registros  = Reservas::Gestor::registros();
 	my %query  = query();
-    my $id = params->{'id'};
+	my $id = params->{'id'};
 	template 'puntual.tt', {
 		'msg' => get_flash(),
 		'page_title'	=> 'Reserva ' . $id,
 		# 'add_grabar_url' => uri_for('/grabar'),
 		'registros' => \%registros,
 		'query' => \%query,
-        'filtro_id' => $id,
-        #'filtro_id_cosa' => $cosa,
+	        'filtro_id' => $id,
+        	#'filtro_id_cosa' => $cosa,
 	};
 };
 
-any ['get', 'post'] => '/consultar' => require_login sub {
-	my $puede_reservar = 0;
-	my $resultado = '';
-
-	if ( request->method() eq "POST" ) {
-
-		my %pedido_IN = params;
-
-		my ( $reporte, $pedido_normalizado ) 
-			= Reservas::Gestor::evaluar(%pedido_IN);
-
-		if ( $pedido_normalizado ) {
-			my ($msj,$pedido_disponible)
-				= Reservas::Gestor::consultar($pedido_normalizado);
-			$reporte .=  " -> ".$msj;
-
-			# Ingresar Pedido
-			if ( $pedido_disponible ){
-				$puede_reservar = 1;
-				session 'pedido' => $pedido_disponible;
-			}
-		}
-		set_flash($reporte);
-		$resultado = $reporte;
-	};
-	template 'consulta.tt', {
+get '/consultar' => require_login sub {
+	template 'consultar.tt', {
 		'msg'		=> get_flash(),
 		'page_title'	=> 'Consultar Disponibilidad',
 		'inventario'    =>  \%inventario,
-		'reporte'      	=> $resultado,
-		'puede_reservar'=> $puede_reservar,
 	}
 };
 
-get '/reservar' => require_login sub {
+post '/consultar' => require_login sub {
+	my %pedido_IN = params;
+	my ( $reporte, $pedido_normalizado ) 
+		= Reservas::Gestor::evaluar(%pedido_IN);
+
+	if ( $pedido_normalizado ) {
+		my ($msj,$pedido_disponible)
+			= Reservas::Gestor::consultar($pedido_normalizado);
+		$reporte .=  " -> ".$msj;
+
+		# Ingresar Pedido
+		if ( $pedido_disponible ){
+			session 'pedido' => $pedido_disponible;
+		}
+	}
+	set_flash($reporte);
+
+};
+
+
+get '/pre-reserva' => require_login sub {
 	template 'reservar.tt', {
 		'msg' => get_flash(),
 		'grabar_url' => uri_for('/grabar'),
