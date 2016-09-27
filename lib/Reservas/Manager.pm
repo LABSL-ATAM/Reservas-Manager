@@ -17,6 +17,16 @@ my $flash;
 my %inventario = Reservas::Gestor::inventario();
 
 
+# AUTENTIFICACION
+
+sub login_page_handler {
+    template 'login';
+}
+
+sub permission_denied_page_handler {
+    template 'login';
+}
+
 # Hooks
 
 hook before_template_render => sub {
@@ -122,8 +132,23 @@ get '/users' => require_login sub {
 	return "Hi there, $user->{username}";
 };
 
-
-
+# Auth rules: Copy-pastiado y simple / garlompo
+post '/login' => sub {
+        my ($success, $realm) = authenticate_user(
+            params->{username}, params->{password}
+        );
+        if ($success) {
+            session logged_in_user => params->{username};
+            session logged_in_user_realm => $realm;
+        } else {
+            redirect '/login';
+        }
+};
+    
+any '/logout' => sub {
+    session->destroy;
+    redirect '/';
+};
 
 ## Subfunciones
 
