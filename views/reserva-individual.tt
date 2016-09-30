@@ -1,0 +1,31 @@
+
+[% USE date %]
+[% USE Dumper(indent=1, pad="<br>") %]
+
+
+
+[% IF session.logged_in %]
+<!--  
+	<form action="[% add_pedido_url %]" method=post class=add-entry>
+	<dl>
+		<dt>Title:
+		<dd><input type=text size=30 name=title>
+		<dt>Text:
+		<dd><textarea name=text rows=5 cols=40></textarea>
+		<dd><input type=submit value=Share>
+	</dl>
+	</form> 
+-->
+[% END %]
+
+
+
+[% IF reserva %]
+	[% Dumper.dump(reserva) %]
+[% ELSE %]
+
+
+
+	<em>Unbelievable.  Nada para mostrar...</em>
+
+[% END %]

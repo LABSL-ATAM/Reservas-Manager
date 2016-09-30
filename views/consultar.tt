@@ -102,8 +102,9 @@
 				type="text" 
 				class="form-control" 
 				aria-describedby="quienHelp" 
-				placeholder="Nombre y/o apellido"
+				placeholder="Nombre y apellido..."
 				name="quien"
+				required
 			>
 			<small id="quienHelp" class="form-text text-muted">
 				Indetifique a la persona responsable de la reserva. 	
@@ -111,7 +112,7 @@
 		</div>	
 
 		<div class="form-group">
-			<label for="exampleTextarea">¿Algun Comentario?</label>
+			<label for="exampleTextarea">Comentarios:</label>
 			<textarea id="exampleTextarea" 
 				class="form-control" 
 				rows="3"

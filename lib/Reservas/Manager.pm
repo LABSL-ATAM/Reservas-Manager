@@ -31,10 +31,9 @@ sub permission_denied_page_handler {
 # Hooks
 
 hook before_template_render => sub {
-	my $tokens = shift;
-	# $tokens->{'css_url'} = request->base . 'css/style.css';
-	$tokens->{'login_url'}  = uri_for('/login');
-	$tokens->{'logout_url'} = uri_for('/logout');
+#	my $tokens = shift;
+#	$tokens->{'login_url'}  = uri_for('/login');
+#	$tokens->{'logout_url'} = uri_for('/logout');
 #	$tokens->{'consulta_url'}   = uri_for('/consultar');
 #	$tokens->{'res'}   = uri_for('/reservar');
 };
@@ -55,15 +54,24 @@ get '/' => require_login sub {
 
 # Agregado: Cada ID con su render...
 get '/ID/:id' => require_login sub {
-	my %registros  = Reservas::Gestor::registros();
-	my %query  = query();
 	my $id = params->{'id'};
-	template 'puntual.tt', {
+	my %registros  = Reservas::Gestor::registros();
+	my %reserva;	
+	# foreach my $item (keys %registro) {
+        # $registro{$item}{$reserva}{'cuando'}
+	foreach my  $recurso (keys %registros){
+		foreach my $reserva (keys %{$registros{$recurso}}){
+			if($id eq $reserva){
+				say $reserva;
+				%reserva = %{$registros{$recurso}{$reserva}};
+			}	
+		}
+	}
+	
+	template 'reserva-individual.tt', {
 		'flash' => get_flash(),
-		'page_title'	=> 'Reserva ' . $id,
-		'registros' => \%registros,
-		'query' => \%query,
-	        'filtro_id' => $id,
+		'page_title'	=> 'Reserva: ' . $id,
+		'reserva' => \%reserva,
 		# 'add_grabar_url' => uri_for('/grabar'),
         	# 'filtro_id_cosa' => $cosa,
 	};
