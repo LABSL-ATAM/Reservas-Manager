@@ -122,7 +122,7 @@ sub evaluar{
 			"[$item-".
 			"$anio/$mes/$dia:$hora".
 			"x$duracion] ".
-			"RECHAZADO ".
+			"Consulta <b>RECHAZADA</b> ".
 			"($porque)";
 	}
 
@@ -222,9 +222,9 @@ sub consultar{
 	}
 
 	if(!$ocupado){
-		return "DISPONIBLE",$p;
+		return "Recurso <b>DISPONIBLE</b>",$p;
 	}else{
-		return "OCUPADO";
+		return "Recurso <b>OCUPADO</b>";
 	}
 }
 
@@ -239,7 +239,7 @@ sub registrar{
 		comentario  => $p->{comentario}
 	};
 	$registros{$item}{$reserva_id} = $pedido_embalado;
-	return "INGRESO Reserva: $reserva_id";
+	return "INGRESO Reserva: <b>$reserva_id</b>";
 }
 
 sub grabar{

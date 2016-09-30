@@ -13,7 +13,8 @@ use Dancer2::Plugin::Auth::Extensible;
 our $VERSION = '0.1';
 
 my $time = time;
-my $flash;
+my %flash;
+
 my %inventario = Reservas::Gestor::inventario();
 
 
@@ -34,8 +35,8 @@ hook before_template_render => sub {
 	# $tokens->{'css_url'} = request->base . 'css/style.css';
 	$tokens->{'login_url'}  = uri_for('/login');
 	$tokens->{'logout_url'} = uri_for('/logout');
-	$tokens->{'consulta_url'}   = uri_for('/consultar');
-	$tokens->{'res'}   = uri_for('/reservar');
+#	$tokens->{'consulta_url'}   = uri_for('/consultar');
+#	$tokens->{'res'}   = uri_for('/reservar');
 };
 
 
@@ -45,34 +46,34 @@ get '/' => require_login sub {
 	my %registros  = Reservas::Gestor::registros();
 	my %query  = query();
 	template 'index.tt', {
-		'msg' => get_flash(),
 		'page_title'	=> 'Reservas de Recursos',
-		# 'add_grabar_url' => uri_for('/grabar'),
 		'registros' => \%registros,
 		'query' => \%query,
-	};
+		'flash' => get_flash(),
+	}
 };
+
 # Agregado: Cada ID con su render...
 get '/ID/:id' => require_login sub {
 	my %registros  = Reservas::Gestor::registros();
 	my %query  = query();
 	my $id = params->{'id'};
 	template 'puntual.tt', {
-		'msg' => get_flash(),
+		'flash' => get_flash(),
 		'page_title'	=> 'Reserva ' . $id,
-		# 'add_grabar_url' => uri_for('/grabar'),
 		'registros' => \%registros,
 		'query' => \%query,
 	        'filtro_id' => $id,
-        	#'filtro_id_cosa' => $cosa,
+		# 'add_grabar_url' => uri_for('/grabar'),
+        	# 'filtro_id_cosa' => $cosa,
 	};
 };
 
 get '/consultar' => require_login sub {
 	template 'consultar.tt', {
-		'msg'		=> get_flash(),
 		'page_title'	=> 'Consultar Disponibilidad',
 		'inventario'    =>  \%inventario,
+		'flash'		=> get_flash(),
 	}
 };
 
@@ -80,25 +81,31 @@ post '/consultar' => require_login sub {
 	my %pedido_IN = params;
 	my ( $reporte, $pedido_normalizado ) 
 		= Reservas::Gestor::evaluar(%pedido_IN);
-
+	set_flash($reporte, 'warning');
 	if ( $pedido_normalizado ) {
 		my ($msj,$pedido_disponible)
 			= Reservas::Gestor::consultar($pedido_normalizado);
 		$reporte .=  " -> ".$msj;
+		set_flash($reporte, 'danger');
 
 		# Ingresar Pedido
 		if ( $pedido_disponible ){
 			session 'pedido' => $pedido_disponible;
+			set_flash($reporte,'success');
+			redirect '/preview';	
+		}else{
+			redirect '/consultar';	
 		}
+	
+	}else{
+		redirect '/consultar';	
 	}
-	set_flash($reporte);
-
 };
 
 
-get '/pre-reserva' => require_login sub {
-	template 'reservar.tt', {
-		'msg' => get_flash(),
+get '/preview' => require_login sub {
+	template 'preview.tt', {
+		'flash' => get_flash(),
 		'grabar_url' => uri_for('/grabar'),
 	};
 
@@ -109,24 +116,27 @@ get '/grabar' => require_login sub {
 		my $pedido = session->{'data'}{'pedido'};
 		my $reporte .= Reservas::Gestor::registrar($pedido);
 		Reservas::Gestor::grabar();
-		set_flash($reporte);
+		set_flash($reporte, 'success');
 		delete session->{'data'}{'pedido'};
 	}
 	my %registros = Reservas::Gestor::registros();
 	my %query  = query();
 	template 'index.tt', {
-		'msg' => get_flash(),
+		'flash' => get_flash(),
 		'registros' => \%registros,
 		'query' => \%query,
 	};
 
 };
+
+## user/session negotiation
+
 get '/users' => require_login sub {
 	my $user = logged_in_user;
 	return "Hi there, $user->{username}";
 };
 
-# Auth rules: Copy-pastiado y simple / garlompo
+### Auth rules: Copy-pastiado y simple / garlompo
 post '/login' => sub {
         my ($success, $realm) = authenticate_user(
             params->{username}, params->{password}
@@ -144,17 +154,39 @@ any '/logout' => sub {
     redirect '/';
 };
 
+
 ## Subfunciones
 
 ### Notification Handling
 sub set_flash {
 	my $message = shift;
-	$flash = $message;
+	my $estado = shift;
+	#my $estado = 'info';	
+	$flash{'contenido'} = $message;
+	$flash{'estado'} = $estado;
 }
+#sub get_flash {
+#	# my $msg = $flash;
+#	my $msg = $flash{'contenido'};
+#	my $estado = $flash{'estado'};
+#
+#	delete $flash{'contenido'};
+#	delete $flash{'estado'};
+#
+#	return $msg;
+#}
 sub get_flash {
-	my $msg = $flash;
-	$flash = "";
-	return $msg;
+	my %f;
+	$f{'contenido'} = $flash{contenido};
+	$f{'estado'} = $flash{'estado'};
+	if(!$f{'estado'}) {
+	
+		$f{'estado'} = 'info';
+	}
+	delete $flash{'contenido'};
+	delete $flash{'estado'};
+
+	return \%f;
 }
 
 # Ordenar y Filtrar Reservas viejas... 

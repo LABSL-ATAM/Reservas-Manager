@@ -69,19 +69,11 @@
 					<h1>[% page_title %]</h1>
 				[% END %]
 				
-				[% IF msg %]
-					[% IF session.pedido %]
-						<div 
-							class="alert alert-success flash" 
-							role="alert"
-						>
-					[% ELSE %]
-						<div 
-							class="alert alert-danger flash" 
-							role="alert"
-						>
-					[% END %]
-						[% msg %]
+				[% IF flash.contenido %]
+					<div class="alert alert-[% flash.estado %]" 
+						role="alert"
+					>
+						[% flash.contenido %]
 					</div>
 				[% END %]
 				
