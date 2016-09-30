@@ -64,6 +64,7 @@ get '/ID/:id' => require_login sub {
 			if($id eq $reserva){
 				say $reserva;
 				%reserva = %{$registros{$recurso}{$reserva}};
+				$reserva{'recurso'} = $recurso;
 			}	
 		}
 	}

@@ -21,7 +21,31 @@
 
 
 [% IF reserva %]
-	[% Dumper.dump(reserva) %]
+	[% 	SALE = date.format(
+		reserva.
+		cuando.split('-').first
+	)
+	%]
+	[% 	VUELVE = date.format(
+			reserva.
+			cuando.split('-').last
+		)
+	%]
+<div class="jumbotron">
+	Recurso: [% reserva.recurso %] </br>
+	
+	Sale: 
+		[% SALE.split(' ').last %]
+		[% SALE.split(' ').first %]
+	</br>
+	Vuelve: 
+	
+		[% SALE.split(' ').last %]
+		[% SALE.split(' ').first %]
+	</br>
+	Quien: [% reserva.quien %] </br>
+	Comentario: [% reserva.comentario %] </br>
+</div>
 [% ELSE %]
 
 
