@@ -31,9 +31,9 @@ sub permission_denied_page_handler {
 # Hooks
 
 hook before_template_render => sub {
-#	my $tokens = shift;
-#	$tokens->{'login_url'}  = uri_for('/login');
-#	$tokens->{'logout_url'} = uri_for('/logout');
+	my $tokens = shift;
+	$tokens->{'login_url'}  = uri_for('/login');
+	$tokens->{'logout_url'} = uri_for('/logout');
 #	$tokens->{'consulta_url'}   = uri_for('/consultar');
 #	$tokens->{'res'}   = uri_for('/reservar');
 };

@@ -49,8 +49,15 @@
 	}	
 	.registros, .registros th{
 		text-align: center;
+	
 	}
+	.dimmed{
+		opacity:.3;
+	}	
 
+	.fecha{	
+		font-family: monospace;
+	}
 	</style>
 	
 	<body>
@@ -84,15 +91,20 @@
 		
 		<footer id="footer">
 			<div class="container">
-				<div class="logout">
-					[% USE date %]
-					[% date.format %]
-					/	
-					[% IF not session.logged_in_user %]
-						<a href="[% login_url %]">Log IN</a>
-					[% ELSE %]
-						<a href="[% logout_url %]">Log OUT</a>
-					[% END %]
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-11">
+							[% USE date %]
+							[% date.format(regular, format => '%H:%M | %A %d de  %B de %Y') %]
+				    		</div>
+						<div class="col-sm-1">
+							[% IF not session.logged_in_user %]
+								<a href="[% login_url %]">INGRESAR</a>
+							[% ELSE %]
+								<a href="[% logout_url %]">SALIR</a>
+							[% END %]
+					</div>
+					</div>
 				</div>
 			</div>
 		</footer>

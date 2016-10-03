@@ -46,7 +46,6 @@ sub evaluar{
 	my %pedido = @_;
 	# print Dumper(%pedido);
 	my $item 		= $pedido{item};
-	print Dumper($pedido{'fecha'});
 	
 	my ($anio,$mes,$dia) 	= split /-/, $pedido{'fecha'};
 	print Dumper($dia);

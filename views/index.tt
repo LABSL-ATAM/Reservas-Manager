@@ -4,19 +4,6 @@
 
 
 
-[% IF session.logged_in %]
-<!--  
-	<form action="[% add_pedido_url %]" method=post class=add-entry>
-	<dl>
-		<dt>Title:
-		<dd><input type=text size=30 name=title>
-		<dt>Text:
-		<dd><textarea name=text rows=5 cols=40></textarea>
-		<dd><input type=submit value=Share>
-	</dl>
-	</form> 
--->
-[% END %]
 
 
 
@@ -36,28 +23,28 @@
 					<td class="table-active">
 						<strong>[% item %]</strong>
 					</td>
-					<td>
+					<td class="dimmed">
 						<strong>SALE</strong>
 					</td>
-					<td>
+					<td class="dimmed">
 						<strong>VUELVE</strong>
 					</td>
-					<td >
+					<td class="dimmed">
 						<strong>QUIEN</strong>
 					</td>
 				</tr>
 
 				[% FOREACH reserva IN query.$item.reservas %]
-					[% 	SALE = date.format(
+					[% SALE = date.format(
 						registros.$item.$reserva.
-						cuando.split('-').first
-					)
-					%]
-					[% 	VUELVE = date.format(
-							registros.$item.$reserva.
-							cuando.split('-').last
-						)
-					%]
+						cuando.split('-').first,
+						'%a %d/%b %H:%M' 
+					)%]
+					[% VUELVE = date.format(
+						registros.$item.$reserva.
+						cuando.split('-').last,
+						'%a %d/%b %H:%M ' 
+					)%]
 
 				 	<tr id="[% reserva %]" class="reserva" >
 				 		<td class="id">
@@ -66,14 +53,12 @@
 							</small>
 						</td>
 						
-						<td class="sale table-danger">
-							[% SALE.split(' ').last %]
-							[% SALE.split(' ').first %]
+						<td class="fecha sale table-danger">
+							[% SALE %]
 						</td>	
 							 
-						<td class="vuelve table-success">
-							[% VUELVE.split(' ').last %]
-							[% VUELVE.split(' ').first %]
+						<td class="fecha vuelve table-success">
+							[% VUELVE %]
 						</td>
 
 						<td class="info">
