@@ -31,7 +31,7 @@ print Dumper( %registros ) if $verbose;
 sub inventario{
 	# # Inventario (items disponibles)
 	my @inventario =  split /\W/, read_file('inventario');
-	my %inventario = map { $_ => 1 } @inventario; # CABEZEADA POR REVISAR
+	my %inventario = map { $_ => 1 } @inventario; # POR REVISAR
 	return %inventario;
 }
 
@@ -46,9 +46,10 @@ sub evaluar{
 	my %pedido = @_;
 	# print Dumper(%pedido);
 	my $item 		= $pedido{item};
-	# print Dumper($pedido{'fecha'});
+	print Dumper($pedido{'fecha'});
 	
-	my ($anio,$mes,$dia) = split /-/, $pedido{'fecha'};
+	my ($anio,$mes,$dia) 	= split /-/, $pedido{'fecha'};
+	print Dumper($dia);
 #	my $mes 		= $pedido{mes};
 #	my $dia 		= $pedido{dia};
 	my $hora 		= $pedido{hora};

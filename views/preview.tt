@@ -9,6 +9,7 @@
 		</p>
 		<p class="cuando">
 			[%	SALE = date.format(
+					session.pedido.
 					cuando.split('-').first
 				)
 			%]
