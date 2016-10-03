@@ -55,6 +55,7 @@
 		opacity:.3;
 	}	
 
+	.id,
 	.fecha{	
 		font-family: monospace;
 	}

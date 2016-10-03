@@ -49,7 +49,10 @@
 				 	<tr id="[% reserva %]" class="reserva" >
 				 		<td class="id">
 							<small class="text-muted">
-							<a href="/ID/[% reserva %]" target="_blank">[% reserva %]</a>
+							<a href="/ID/[% reserva %]" 
+								target="_blank">
+								[% reserva %]
+							</a>
 							</small>
 						</td>
 						
