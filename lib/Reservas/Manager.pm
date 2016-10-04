@@ -11,7 +11,7 @@ use Dancer2;
 use Dancer2::Plugin::Auth::Extensible;
 
 our $VERSION = '0.1';
-
+        # Import locale-handling tool set from POSIX module.
 my $time = time;
 my %flash;
 
@@ -34,8 +34,6 @@ hook before_template_render => sub {
 	my $tokens = shift;
 	$tokens->{'login_url'}  = uri_for('/login');
 	$tokens->{'logout_url'} = uri_for('/logout');
-#	$tokens->{'consulta_url'}   = uri_for('/consultar');
-#	$tokens->{'res'}   = uri_for('/reservar');
 };
 
 
@@ -52,8 +50,7 @@ get '/' => require_login sub {
 	}
 };
 
-# Agregado: Cada ID con su render...
-get '/ID/:id' => require_login sub {
+get '/reserva/:id' => require_login sub {
 	my $id = params->{'id'};
 	my %registros  = Reservas::Gestor::registros();
 	my %reserva;	

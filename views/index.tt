@@ -2,22 +2,16 @@
 [% USE date %]
 [% USE Dumper(indent=1, pad="<br>") %]
 
-
-
-
-
-
 [% IF registros.size %]
 	<table class="registros table table-hover table-sm">
 		<thead class="thead-inverse">
 	    	<tr>
-	   			<th>RECURSO</th>
+   			<th>RECURSO</th>
 	      		<th colspan="3">RESERVAS</th>
 	        </tr>
 		</thead>
-
-	<tbody>
-
+		
+		<tbody>
 		[% FOREACH item IN query.keys.sort %]
 				<tr class="head">
 					<td class="table-active">
@@ -43,13 +37,13 @@
 					[% VUELVE = date.format(
 						registros.$item.$reserva.
 						cuando.split('-').last,
-						'%a %d/%b %H:%M ' 
+						'%a %d/%b %H:%M' 
 					)%]
 
 				 	<tr id="[% reserva %]" class="reserva" >
 				 		<td class="id">
 							<small class="text-muted">
-							<a href="/ID/[% reserva %]" 
+							<a href="/reserva/[% reserva %]" 
 								target="_blank">
 								[% reserva %]
 							</a>

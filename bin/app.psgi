@@ -5,6 +5,10 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 
+use locale;
+use POSIX 'locale_h';
+setlocale(LC_TIME, 'es_AR');   
+    
 use Reservas::Manager;
 Reservas::Manager->to_app;
 
