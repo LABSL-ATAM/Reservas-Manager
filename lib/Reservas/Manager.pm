@@ -11,7 +11,6 @@ use Dancer2;
 use Dancer2::Plugin::Auth::Extensible;
 
 our $VERSION = '0.1';
-        # Import locale-handling tool set from POSIX module.
 my $time = time;
 my %flash;
 
@@ -39,7 +38,7 @@ hook before_template_render => sub {
 
 # Ruteos
 
-get '/' => require_login sub {
+get '/' => sub {
 	my %registros  = Reservas::Gestor::registros();
 	my %query  = query();
 	template 'index.tt', {
@@ -50,7 +49,7 @@ get '/' => require_login sub {
 	}
 };
 
-get '/reserva/:id' => require_login sub {
+get '/reserva/:id' => sub {
 	my $id = params->{'id'};
 	my %registros  = Reservas::Gestor::registros();
 	my %reserva;	
@@ -75,7 +74,7 @@ get '/reserva/:id' => require_login sub {
 	};
 };
 
-get '/consultar' => require_login sub {
+get '/consultar' => sub {
 	template 'consultar.tt', {
 		'page_title'	=> 'Consultar Disponibilidad',
 		'inventario'    =>  \%inventario,
@@ -83,7 +82,7 @@ get '/consultar' => require_login sub {
 	}
 };
 
-post '/consultar' => require_login sub {
+post '/consultar' => sub {
 	my %pedido_IN = params;
 	my ( $reporte, $pedido_normalizado ) 
 		= Reservas::Gestor::evaluar(%pedido_IN);
@@ -109,10 +108,13 @@ post '/consultar' => require_login sub {
 };
 
 
-get '/preview' => require_login sub {
+get '/preview' => sub {
+	unless(session->{'data'}{'pedido'}){
+		redirect '/';
+	}
 	template 'preview.tt', {
-		'flash' => get_flash(),
 		'grabar_url' => uri_for('/grabar'),
+		'cancelar_url' => uri_for('/cancelar'),
 	};
 
 };
@@ -135,6 +137,15 @@ get '/grabar' => require_login sub {
 
 };
 
+
+
+get '/cancelar' => require_login sub {
+	if (session->{'data'}{'pedido'}){
+		delete session->{'data'}{'pedido'};
+		set_flash('Reserva <b>CANCELADA</b>', 'danger');
+	};
+	redirect '/';
+};
 ## user/session negotiation
 
 get '/users' => require_login sub {
@@ -143,22 +154,24 @@ get '/users' => require_login sub {
 };
 
 ### Auth rules: Copy-pastiado y simple / garlompo
-post '/login' => sub {
-        my ($success, $realm) = authenticate_user(
-            params->{username}, params->{password}
-        );
-        if ($success) {
-            session logged_in_user => params->{username};
-            session logged_in_user_realm => $realm;
-        } else {
-            redirect '/login';
-        }
-};
+# post '/login' => sub {
+#         my ($success, $realm) = authenticate_user(
+#             	params->{username}, params->{password}
+#         );
+#         if ($success) {
+# 		redirect '/preview';	
+# 		print Dumper (session);
+#             	session logged_in_user => params->{username};
+#         	session logged_in_user_realm => $realm;
+#         } else {
+#             	redirect '/login';
+#         }
+# };
     
-any '/logout' => sub {
-    session->destroy;
-    redirect '/';
-};
+#any '/logout' => sub {
+#    session->destroy;
+#    redirect '/';
+#};
 
 
 ## Subfunciones
@@ -167,26 +180,15 @@ any '/logout' => sub {
 sub set_flash {
 	my $message = shift;
 	my $estado = shift;
-	#my $estado = 'info';	
+	# my $estado = 'info';	
 	$flash{'contenido'} = $message;
 	$flash{'estado'} = $estado;
 }
-#sub get_flash {
-#	# my $msg = $flash;
-#	my $msg = $flash{'contenido'};
-#	my $estado = $flash{'estado'};
-#
-#	delete $flash{'contenido'};
-#	delete $flash{'estado'};
-#
-#	return $msg;
-#}
 sub get_flash {
 	my %f;
 	$f{'contenido'} = $flash{contenido};
 	$f{'estado'} = $flash{'estado'};
 	if(!$f{'estado'}) {
-	
 		$f{'estado'} = 'info';
 	}
 	delete $flash{'contenido'};

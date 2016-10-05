@@ -1,3 +1,6 @@
+[% USE date %]
+
+[% HOY = date.format(format => '%Y-%m-%d') %]
 <form action="/consultar" method=post>
 	<div class="form-group">
 		<div class="form-group">
@@ -21,6 +24,7 @@
 			</label>
 			<input 
 				type="date" 
+				value="[% HOY %]"
 				class="form-control" 
 				id="diaSelect" 
 				name="fecha"
@@ -74,7 +78,7 @@
 				type="text" 
 				class="form-control" 
 				aria-describedby="quienHelp" 
-				placeholder="Nombre y apellido..."
+				placeholder="Nombre y Apellido, Nº legajo ó D.N.I."
 				name="quien"
 				required
 			>

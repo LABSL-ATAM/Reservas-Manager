@@ -40,7 +40,7 @@ plugins:
         login_page_handler: 'Reservas::Manager::login_page_handler'
         permission_denied_page_handler: 'Reservas::Manager::permission_denied_page_handler'
         #disable_roles: 1
-        user_home_page: '/'
+        user_home_page: '/preview'
         exit_page: '/'
         realms:
             config:
