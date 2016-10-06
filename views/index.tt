@@ -17,11 +17,15 @@
 					<td class="table-active">
 						<strong>[% item %]</strong>
 					</td>
-					<td class="dimmed">
-						<strong>SALE</strong>
+					<td>
+						<small class="text-muted">
+							<strong>SALE</strong>
+						</small>
 					</td>
-					<td class="dimmed">
-						<strong>VUELVE</strong>
+					<td> 
+						<small class="text-muted">
+							<strong>VUELVE</strong>
+						</small>
 					</td>
 					<td class="dimmed">
 						<strong>QUIEN</strong>
@@ -42,19 +46,18 @@
 
 				 	<tr id="[% reserva %]" class="reserva" >
 				 		<td class="id">
-							<small class="text-muted">
-							<a href="/reserva/[% reserva %]" 
-								target="_blank">
-								[% reserva %]
+							<a href="/reserva/[% reserva %]">
+								<small class="text-muted">
+									[% reserva %]
+								</small>
 							</a>
-							</small>
 						</td>
 						
-						<td class="fecha sale table-danger">
+						<td class="fecha sale ">
 							[% SALE %]
 						</td>	
 							 
-						<td class="fecha vuelve table-success">
+						<td class="fecha vuelve ">
 							[% VUELVE %]
 						</td>
 
@@ -70,6 +73,7 @@
 		[% END %]
   	</tbody>
 </table>
+
 [% ELSE %]
 
 	<em>Unbelievable.  No entries here so far</em>
