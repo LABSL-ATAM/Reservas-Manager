@@ -4,6 +4,10 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Data::Uniqid qw ( luniqid );
+#TZ=PST8PDT;
+#use Date::Manip::TZ;
+#$tz = new Date::Manip::TZ;
+#use Date::Manip;
 use File::Slurp;
 use JSON;
 my $json = JSON->new;
@@ -44,7 +48,7 @@ sub registros{
 
 sub evaluar{
 	my %pedido = @_;
-	# print Dumper(%pedido);
+	#print Dumper(%pedido);
 	my $item 		= $pedido{item};
 	my ($anio,$mes,$dia) 	= split /-/, $pedido{'fecha'};
 	my $hora 		= $pedido{hora};
@@ -72,7 +76,7 @@ sub evaluar{
 	}else {
 		$item_existe = 1;
 		if( ($duracion > $limite_duracion) || ($duracion < 1)  ){
-			$porque = "Duracion: 1 < $duracion? > $limite_duracion";
+			$porque = "Duracion: 1 < $duracion > $limite_duracion";
 
 		}else {
 			$duracion_correcta = 1;
@@ -127,8 +131,15 @@ sub evaluar{
 
 }
 
+
+sub valid_yyyymmdd {
+	$_[0] =~ /^(\d{8})$/ and ParseDate($1) and 1;
+	}
+#print "$_\n" for qw"20060630 20060631 20060730 20060731 20060732 2006.07.30 06.07.31";'
 sub fecha_correcta {
 	my ( $mes, $dia, $hora ) =  @_;
+
+	#valid_yyyymmdd($_) 
 
 	my $mes_correcto;
 	my $dia_correcto;
@@ -164,17 +175,19 @@ sub fecha_correcta {
 
 sub cantidad_dias{
 	my $m = $_[0];
+	# primera decena tiene leading 0
+	# print Dumper(s/^0/$m/g);
 
 	my %mes2dias = qw(
-		1 31  2 28  3 31  4 30  5 31  6 30
-		7 31  8 30  9 31  10 31  11 30  12 31
+		01 31  02 28  03 31  04 30  05 31 06 30
+		07 31  08 30  09 31  10 31  11 30  12 31
 	);
 
 	# Revisar esto
 	if( es_bisiesto($anio) ){
 		%mes2dias = qw(
-			1 31  2 29  3 31  4 30  5 31  6 30
-			7 31  8 30  9 31  10 31  11 30  12 31
+			01 31  02 29  03 31  04 30  05 31  06 30
+			07 31  08 30  09 31  10 31  11 30  12 31
 		);
 	}
 
