@@ -69,7 +69,7 @@ get '/reserva/:id' => sub {
 		'flash' => get_flash(),
 		'page_title'	=> 'Reserva: ' . $id,
 		'reserva' => \%reserva,
-		# 'add_grabar_url' => uri_for('/grabar'),
+		'borrar_url' => uri_for('/borrar/'.$id),
         	# 'filtro_id_cosa' => $cosa,
 	};
 };
@@ -145,6 +145,39 @@ get '/cancelar' => require_login sub {
 		set_flash('Reserva <b>CANCELADA</b>', 'danger');
 	};
 	redirect '/';
+};
+
+get '/borrar/:id' => sub {
+	my $id = params->{'id'};
+	my %registros  = Reservas::Gestor::registros();
+	my %reserva;	
+	my $encontrada = 0;	
+	foreach my  $recurso (keys %registros){
+		foreach my $reserva (keys %{$registros{$recurso}}){
+			if($id eq $reserva){
+				say $reserva;
+				%reserva = %{$registros{$recurso}{$reserva}};
+				$reserva{'recurso'} = $recurso;
+				$encontrada = 1;	
+			}	
+		}
+	}
+        if($encontrada){	
+	   set_flash('VAS A BORRAR:'.$id, 'danger');
+	   template 'reserva-borrar.tt', {
+	   	'flash' => get_flash(),
+	   	'page_title'	=> 'BORRAR: ' . $id,
+	   	'reserva' => \%reserva,
+	   };
+	}else{
+	   set_flash('NADA PARA HACER!', 'warning');
+	   template 'reserva-borrar.tt', {
+	   	'flash' => get_flash(),
+	   	'page_title'	=> 'NO ENCONTRÉ: ' . $id,
+	   	'reserva' => '',
+	   };
+	};
+
 };
 ## user/session negotiation
 

@@ -132,14 +132,8 @@ sub evaluar{
 }
 
 
-sub valid_yyyymmdd {
-	$_[0] =~ /^(\d{8})$/ and ParseDate($1) and 1;
-	}
-#print "$_\n" for qw"20060630 20060631 20060730 20060731 20060732 2006.07.30 06.07.31";'
 sub fecha_correcta {
 	my ( $mes, $dia, $hora ) =  @_;
-
-	#valid_yyyymmdd($_) 
 
 	my $mes_correcto;
 	my $dia_correcto;
