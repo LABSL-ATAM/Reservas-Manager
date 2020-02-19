@@ -3,26 +3,24 @@
 [% USE Dumper(indent=1, pad="<br>") %]
 
 [% IF reserva %]
+
 [% IF reserva.cuando  %]
 	[% SALE = date.format(
 		reserva.cuando.split('-').first,
-		'%A %d de  %B de %Y a las %H:%M'
+		'%A %d de %B de %Y a las %H:%M'
 	)%]
 	[% VUELVE = date.format(
 		reserva.cuando.split('-').last,
-		'%A %d de  %B de %Y a las %H:%M'
+		'%A %d de %B de %Y a las %H:%M'
 	)%]
 [% END %]
 
 <div class="jumbotron">
 	Recurso: [% reserva.recurso %]</br>
 	
-	Sale: 
-		[% SALE %]
+	Sale: [% SALE %]
 	</br>
-	Vuelve: 
-	
-		[% VUELVE %]
+	Vuelve: [% VUELVE %]
 	</br>
 	Quien: [% reserva.quien %] </br>
 	Comentario: [% reserva.comentario %] </br>
@@ -56,6 +54,6 @@
 
 
 
-	<em>Unbelievable.  Nada para mostrar...</em>
+	<em> Increíble. Nada para mostrar...</em>
 
 [% END %]

@@ -253,7 +253,7 @@ sub borrar{
 	foreach my $item (keys %registros){
 		foreach my $reserva (keys %{$registros{$item}}){
 			if($id eq $reserva ){
-				print Dumper $registros{$item}{$reserva};
+				#print Dumper $registros{$item}{$reserva};
 				delete($registros{$item}{$reserva});
 			}	
 		}

@@ -204,8 +204,8 @@ get '/borrar/:id' => sub {
 	   template 'reserva-borrar.tt', {
 	   	'flash' => get_flash(),
 		#'borrar_url' => uri_for('/borrar/'.$id),
-	   	'page_title'	=> 'BORRAR: ' . $id,
-	   	'reserva' => \%reserva,
+	   	'page_title'	=> 'BORRÉ:' . $id,
+		#'reserva' => \%reserva,
 	   };
 	}else{
 	   set_flash('NADA PARA HACER!', 'warning');
