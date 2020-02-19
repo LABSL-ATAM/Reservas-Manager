@@ -248,6 +248,19 @@ sub registrar{
 	return "INGRESO Reserva: <b>$reserva_id</b>";
 }
 
+sub borrar{
+	my $id= $_[0];
+	foreach my $item (keys %registros){
+		foreach my $reserva (keys %{$registros{$item}}){
+			if($id eq $reserva ){
+				print Dumper $registros{$item}{$reserva};
+				delete($registros{$item}{$reserva});
+			}	
+		}
+	}
+	return "BORRO Reserva: <b>$id</b>";
+}
+
 sub grabar{
 	# Grabar Registros ### ### ###
 	my $registro_actualizado = $json->encode(\%registros);

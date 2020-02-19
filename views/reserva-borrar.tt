@@ -3,6 +3,7 @@
 [% USE Dumper(indent=1, pad="<br>") %]
 
 [% IF reserva %]
+[% IF reserva.cuando  %]
 	[% SALE = date.format(
 		reserva.cuando.split('-').first,
 		'%A %d de  %B de %Y a las %H:%M'
@@ -11,6 +12,7 @@
 		reserva.cuando.split('-').last,
 		'%A %d de  %B de %Y a las %H:%M'
 	)%]
+[% END %]
 
 <div class="jumbotron">
 	Recurso: [% reserva.recurso %]</br>

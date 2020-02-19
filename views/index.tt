@@ -33,16 +33,18 @@
 				</tr>
 
 				[% FOREACH reserva IN query.$item.reservas %]
-					[% SALE = date.format(
-						registros.$item.$reserva.
-						cuando.split('-').first,
-						'%a %d/%b %H:%M' 
-					)%]
-					[% VUELVE = date.format(
-						registros.$item.$reserva.
-						cuando.split('-').last,
-						'%a %d/%b %H:%M' 
-					)%]
+                                         [% IF registros.$item.$reserva.cuando  %]
+					 [% SALE = date.format(
+					 	registros.$item.$reserva.
+					 	cuando.split('-').first,
+					 	'%Y %a %d/%b %H:%M' 
+					 )%]
+					 [% VUELVE = date.format(
+					 	registros.$item.$reserva.
+					 	cuando.split('-').last,
+					 	'%Y %a %d/%b %H:%M' 
+					 )%]
+		                         [% END %]
 
 				 	<tr id="[% reserva %]" class="reserva" >
 				 		<td class="id">

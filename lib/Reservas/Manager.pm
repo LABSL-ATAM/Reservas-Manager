@@ -69,7 +69,7 @@ get '/reserva/:id' => sub {
 		'flash' => get_flash(),
 		'page_title'	=> 'Reserva: ' . $id,
 		'reserva' => \%reserva,
-		'borrar_url' => uri_for('/borrar/'.$id),
+		'previo_borrar_url' => uri_for('/previo_borrar/'.$id),
         	# 'filtro_id_cosa' => $cosa,
 	};
 };
@@ -147,6 +147,40 @@ get '/cancelar' => require_login sub {
 	redirect '/';
 };
 
+get '/previo_borrar/:id' => sub {
+	my $id = params->{'id'};
+	my %registros  = Reservas::Gestor::registros();
+	my %reserva;	
+	my $encontrada = 0;	
+	foreach my  $recurso (keys %registros){
+		foreach my $reserva (keys %{$registros{$recurso}}){
+			if($id eq $reserva){
+				say $reserva;
+				#%reserva = %{$registros{$recurso}{$reserva}};
+				#$reserva{'recurso'} = $recurso;
+				$encontrada = 1;	
+			}	
+		}
+	}
+        if($encontrada){	
+
+	   set_flash('VAS A BORRAR:'.$id, 'danger');
+	   template 'reserva-borrar.tt', {
+		'borrar_url' => uri_for('/borrar/'.$id),
+	   	'flash' => get_flash(),
+	   	'page_title'	=> 'BORRAR: ' . $id,
+	   	'reserva' => \%reserva,
+	   };
+	}else{
+	   set_flash('NADA PARA HACER!', 'warning');
+	   template 'reserva-borrar.tt', {
+	   	'flash' => get_flash(),
+	   	'page_title'	=> 'NO ENCONTRÉ: ' . $id,
+	   	'reserva' => '',
+	   };
+	};
+
+};
 get '/borrar/:id' => sub {
 	my $id = params->{'id'};
 	my %registros  = Reservas::Gestor::registros();
@@ -156,14 +190,17 @@ get '/borrar/:id' => sub {
 		foreach my $reserva (keys %{$registros{$recurso}}){
 			if($id eq $reserva){
 				say $reserva;
-				%reserva = %{$registros{$recurso}{$reserva}};
-				$reserva{'recurso'} = $recurso;
+				#%reserva = %{$registros{$recurso}{$reserva}};
+				#$reserva{'recurso'} = $recurso;
 				$encontrada = 1;	
 			}	
 		}
 	}
         if($encontrada){	
-	   set_flash('VAS A BORRAR:'.$id, 'danger');
+	   my $reporte .= Reservas::Gestor::borrar( $id );
+	   Reservas::Gestor::grabar();
+	   set_flash('BORRASTE:'.$id.$reporte, 'success');
+
 	   template 'reserva-borrar.tt', {
 	   	'flash' => get_flash(),
 	   	'page_title'	=> 'BORRAR: ' . $id,
@@ -249,9 +286,9 @@ sub query{
 				/-/, 
 				$registro{$item}{$reserva}{'cuando'}
 			);	
-			if($vuelve >= $time){
-				push @{$RESULTADO{$item}{'reservas'}}, $reserva;	
-			}	
+			#if($sale>= $time){
+			       push @{$RESULTADO{$item}{'reservas'}}, $reserva;	
+			#}	
 		}
     		
 	}
