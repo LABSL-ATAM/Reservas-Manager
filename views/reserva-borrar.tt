@@ -27,14 +27,23 @@
 	Quien: [% reserva.quien %] </br>
 	Comentario: [% reserva.comentario %] </br>
 		[% IF session.logged_in_user %]
-			<a 
-				href="[% borrar_url %]" 
-				role="button" 
-				class="btn btn-success">
-					borrar
-			</a>
+		     [% IF borrar_url %]
+		     	<a 
+		     		href="[% borrar_url %]" 
+		     		role="button" 
+		     		class="btn btn-success">
+		     			borrar
+		     	</a>
+		     [% ELSE %]
+		     	<a
+		     		href="/" role="button" 
+		     	>
+		     		volver
+		     	</a>
+		     	a la plataforma.
+		     [% END %]
 		[% ELSE %]
-			Para poder borrar debe
+			Para poder BORRAR debe
 			<a
 				href="/login" role="button" 
 			>
